@@ -13,5 +13,8 @@
         <file>Background.qml</file>
         <file>MeasureIcon.qml</file>
         <file>MyChart.qml</file>
+        <file>LoginScreen.qml</file>
+        <file>MainView.qml</file>
+        <file>more.png</file>
     </qresource>
 </RCC>

@@ -7,53 +7,15 @@ Window {
     visible: true
     width: 480
     height: 640
-    title: qsTr("Hello World")
-    property int tileWidth: rootID.width/4
-    property int tileHeight: rootID.height/8
-    Background
-    {
-        id:background
-    }
-    MyChart{
+    title: qsTr("EnvController")
+    property int nrOfHorizontalTiles: 4
+    property int nrOfVerticalTiles: 8
+    property int tileWidth: rootID.width/nrOfHorizontalTiles
+    property int tileHeight: rootID.height/nrOfVerticalTiles
+    Loader {
+        id: loaderID
         anchors.fill: parent
-        id: mychartID
-        z: 2
-    }
-
-    MeasureIcon
-    {
-       id: co2ID
-       imWidth: tileWidth
-       imHeight: tileHeight
-       imSource: "co2.png"
-       x: 128
-       y: 128
-    }
-    MeasureIcon
-    {
-       id: sunID
-       imWidth: tileWidth
-       imHeight: tileHeight
-       imSource: "sun.png"
-       x: 128
-       y: 128
-    }
-    MeasureIcon
-    {
-       id: waterID
-       imWidth: tileWidth
-       imHeight: tileHeight
-       imSource: "water-drop.png"
-       x: 200
-       y: 200
-    }
-    MeasureIcon
-    {
-       id: thermometerID
-       imWidth: tileWidth
-       imHeight: tileHeight
-       imSource: "thermometer.png"
-       x: 300
-       y: 300
+        property bool loginSuccess: false
+        source: loginSuccess ? "MainView.qml" : "LoginScreen.qml"
     }
 }
