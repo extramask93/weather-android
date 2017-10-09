@@ -7,7 +7,7 @@ Item {
         Background {}
     ColumnLayout {
         anchors.fill: parent
-        spacing: 16
+        //spacing: 16
         ColumnLayout { /* username */
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 4
@@ -16,10 +16,8 @@ Item {
                 focus: true
                 placeholderText: "user"
             }
-        }
-        ColumnLayout { /*password*/
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 4
+            //anchors.horizontalCenter: parent.horizontalCenter
+            //spacing: 4
             Label { text:"Password"; color: "black" }
             TextField {
                 echoMode: TextInput.Password
@@ -31,10 +29,11 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             Button {
                 text: "Login"
-                onClicked: loaderID.loginSuccess = true;
+                onClicked: loaderID.source = "MainView.qml";
             }
             Button {
                 text: "Settings"
+                onClicked: loaderID.source = "Settings.qml"
             }
         }
     }

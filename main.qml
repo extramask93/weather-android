@@ -18,4 +18,11 @@ Window {
         property bool loginSuccess: false
         source: loginSuccess ? "MainView.qml" : "LoginScreen.qml"
     }
+    Loader {
+        id: optionsLoaderID
+        width: parent.width/2
+        height: parent.height
+        property bool active: false
+        source: active? "SidePanel.qml" : ""
+    }
 }

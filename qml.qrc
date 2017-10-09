@@ -3,18 +3,22 @@
         <file>main.qml</file>
         <file>MainForm.ui.qml</file>
         <file>VerticalField.qml</file>
-        <file>sky3.jpg</file>
-        <file>ground.svg</file>
-        <file>grass.png</file>
-        <file>co2.png</file>
-        <file>sun.png</file>
-        <file>water-drop.png</file>
-        <file>thermometer.png</file>
         <file>Background.qml</file>
         <file>MeasureIcon.qml</file>
         <file>MyChart.qml</file>
         <file>LoginScreen.qml</file>
         <file>MainView.qml</file>
+        <file>Settings.qml</file>
+        <file>SidePanel.qml</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>co2.png</file>
+        <file>grass.png</file>
         <file>more.png</file>
+        <file>sky3.jpg</file>
+        <file>sun.png</file>
+        <file>thermometer.png</file>
+        <file>water-drop.png</file>
+        <file>ground.svg</file>
     </qresource>
 </RCC>

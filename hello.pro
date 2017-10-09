@@ -3,7 +3,9 @@ TEMPLATE = app
 QT += core gui qml quick charts
 CONFIG += c++11
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    startup.cpp \
+    mainviewmgr.cpp
 
 RESOURCES += qml.qrc
 MAKEFLAGS = -j
@@ -31,3 +33,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES +=
+
+HEADERS += \
+    startup.h \
+    mainviewmgr.h
