@@ -1,36 +1,16 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Controls.Styles 1.4
+import QtQuick.Layouts 1.1
 Item {
     Background {id:background}
-    Row {
-        spacing: tileWidth/2
-        Button {
-            width: tileWidth/2
-            height: tileWidth/2
-            x:0
-            y:0
-            background: Rectangle {
-                border.color: "black"
-                border.width: 3
-                opacity: 0.5
-                radius: 4
-            }
-            spacing: 3
-            Image {
-                anchors.fill: parent
-                source: "images/more.png"
-            }
-          onClicked: {
-              optionsLoaderID.active = !optionsLoaderID.active
-              console(optionsLoaderID.active)
-          }
-        }
-        ComboBox {
+    ComboBox {
+            anchors.top: menuBar.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
             width: 2*tileWidth
             opacity: 0.5
+            spacing: 4
             model: ["Station 1"]
-        }
     }
     MyChart{
         anchors.fill: parent

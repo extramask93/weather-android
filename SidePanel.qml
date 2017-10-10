@@ -4,25 +4,30 @@ import QtQuick.Layouts 1.1
 
 Item {
     Rectangle {
-        color: "white"
+        color: "green"
         anchors.fill: parent
-    ColumnLayout {
-        width: parent.width/2
-        height: parent.height
-        anchors.top: parent.top
-        Label {
-            anchors.centerIn: parent
-            text: "Options"
+        ColumnLayout {
+            width: parent.width
+            height: parent.height
+            anchors.top: parent.top
+            Label {
+                text: "Options"
+                anchors.centerIn: parent
+            }
+            Column {
+                anchors.centerIn: parent
+                spacing: 4
+                Button {
+                    text: "Help"
+                }
+                Button {
+                    text: "About"
+                }
+                Button {
+                    text: "Logout"
+                }
+            }
         }
-        Button {
-            anchors.centerIn: parent
-            text: "Help"
-        }
-        Button {
-            anchors.centerIn: parent
-            text: "About"
-        }
-    }
 
     }
 }

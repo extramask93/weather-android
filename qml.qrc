@@ -10,6 +10,7 @@
         <file>MainView.qml</file>
         <file>Settings.qml</file>
         <file>SidePanel.qml</file>
+        <file>MenuBar.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>co2.png</file>

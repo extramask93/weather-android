@@ -7,7 +7,6 @@ Item {
         Background {}
     ColumnLayout {
         anchors.fill: parent
-        //spacing: 16
         ColumnLayout { /* username */
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 4
@@ -16,8 +15,6 @@ Item {
                 focus: true
                 placeholderText: "user"
             }
-            //anchors.horizontalCenter: parent.horizontalCenter
-            //spacing: 4
             Label { text:"Password"; color: "black" }
             TextField {
                 echoMode: TextInput.Password
