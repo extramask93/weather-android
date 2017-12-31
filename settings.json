@@ -1,0 +1,9 @@
+{
+  "applicationTitle": "Environment Monitor",
+  "appShortName" : "ENVM",
+  "hostname" : "localhost",
+  "port" : 80,
+  "tcpLongWaitMS": 1000,
+  "tcpShortWaitMS":10,
+  "stations" : ["default"]
+}

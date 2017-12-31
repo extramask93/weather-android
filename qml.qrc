@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>VerticalField.qml</file>
+        <file>Background.qml</file>
+        <file>MeasureIcon.qml</file>
+        <file>MyChart.qml</file>
+        <file>LoginScreen.qml</file>
+        <file>MainView.qml</file>
+        <file>Settings.qml</file>
+        <file>SidePanel.qml</file>
+        <file>MenuBar.qml</file>
+        <file>Images/co2.png</file>
+        <file>Images/grass.png</file>
+        <file>Images/ground.svg</file>
+        <file>Images/more.png</file>
+        <file>Images/sky3.jpg</file>
+        <file>Images/sun.png</file>
+        <file>Images/thermometer.png</file>
+        <file>Images/water-drop.png</file>
+    </qresource>
+</RCC>
