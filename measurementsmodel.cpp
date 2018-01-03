@@ -67,3 +67,8 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
         //stations(list);
     }
 }
+
+void MeasurementsModel::populateIcons()
+{
+
+}

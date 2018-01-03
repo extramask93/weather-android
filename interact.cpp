@@ -6,27 +6,72 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QStringList>
-Interact::Interact(QObject *parent, QQmlApplicationEngine &engine):QObject{parent},engine_{engine}
+#include <QQuickItem>
+#include <QQmlContext>
+#include <QTimer>
+#include <QChart>
+#include <QtCharts>
+#include <QAbstractSeries>
+#include <QAbstractAxis>
+#include <QtConcurrent/QtConcurrent>
+#include "calendar.h"
+Interact::Interact(QObject *parent, QQmlApplicationEngine &engine):QObject{parent},engine_{engine}, worker_{new HttpRequestWorker(nullptr)}
 {
+    currentStation = std::make_pair("",0);
+    Measurement *temperature = new Measurement(this,ReadingType::temperature);
+    engine_.rootContext()->setContextProperty("Temperature",temperature);
+    Measurement *humidity = new Measurement(this,ReadingType::humidity);
+    engine_.rootContext()->setContextProperty("Humidity",humidity);
+    Measurement *lux = new Measurement(this,ReadingType::lux);
+    engine_.rootContext()->setContextProperty("Lux",lux);
+    Measurement *co2 = new Measurement(this,ReadingType::co2);
+    engine_.rootContext()->setContextProperty("Co2",co2);
+    measurementList_.append(temperature);
+    measurementList_.append(humidity);
+    measurementList_.append(lux);
+    measurementList_.append(co2);
+    QTimer *timer = new QTimer{this};
+    connect(timer,&QTimer::timeout,this,&Interact::updateDailyJSON);
+    updateDailyJSON();
+    timer->start(3600);
 }
 
 void Interact::Run()
 {
+
+//////////////////////////////////////////////////////////////////////////////
     rootObject_ = engine_.rootObjects()[0];
-    qDebug()<<rootObject_->objectName();
     QObject* home = engine_.rootObjects().first()->findChild<QObject*>("loginObject");
     QObject *logout = engine_.rootObjects().first()->findChild<QObject*>("sidePanelObject");
-    connect(home, SIGNAL(loginSignal(QString, QString)), this, SLOT(onLoginSignal(QString,QString)));
+    QObject *mainView = engine_.rootObjects().first()->findChild<QObject*>("mainViewObject");
+    if(home !=nullptr)
+        connect(home, SIGNAL(loginSignal(QString, QString)), this, SLOT(onLoginSignal(QString,QString)));
     connect(logout, SIGNAL(logOutSignal()),this,SLOT(onLogOutSignal()));
+    connect(mainView, SIGNAL(updateChart(QVariant, QString)),this,SLOT(onUpdateChartSignal(QVariant,QString)));
+    connect(mainView,SIGNAL(loaded()),this,SLOT(RetrieveStations()));
+    RetrieveStations();
 }
 
 void Interact::RetrieveStations()
 {
+    qDebug() << "Retrieving stations";
     QString url = "http://localhost:5000/GetStations";
     HttpRequestInput input(url,"GET");
     HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker,SIGNAL(on_execution_finished(HttpRequestWorker*)),this,SLOT(handleRetrieveStationsResult(HttpRequestWorker*)));
+    connect(worker,&HttpRequestWorker::on_execution_finished,this,&Interact::handleRetrieveStationsResult);
     worker->execute(&input);
+}
+
+void Interact::onUpdateChartSignal(QString type)
+{
+    QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("chartObject");
+    chart->setProperty("title","Dupa");
+    QAbstractSeries * series;
+    QMetaObject::invokeMethod(chart,"series",Qt::AutoConnection,Q_RETURN_ARG(QAbstractSeries*,series),Q_ARG(int,0));
+    QLineSeries *ln = static_cast<QLineSeries*>(series);
+    auto axes = ln->attachedAxes();
+    axes.at(0)->setTitleText("date");
+    axes.at(1)->setTitleText("ppm");
 }
 
 void Interact::onLoginSignal(QString username, QString password)
@@ -69,12 +114,11 @@ void Interact::handleLogOutResult(HttpRequestWorker *worker)
 {
     QObject *loader = engine_.rootObjects().first()->findChild<QObject*>("loaderObject");
     loader->setProperty("source","qrc:/LoginScreen.qml");
-
 }
 
 void Interact::handleRetrieveStationsResult(HttpRequestWorker *worker)
 {
-    qDebug()<<"Welcome from stations";
+    qDebug()<<"There is response";
     if(worker->error_type == QNetworkReply::NoError) {
         QJsonParseError error;
         QJsonDocument document = QJsonDocument::fromJson(worker->response,&error);
@@ -83,15 +127,49 @@ void Interact::handleRetrieveStationsResult(HttpRequestWorker *worker)
         QString stationName;
         uint16_t stationNumber;
         QStringList list;
+        stationsAndIndexes.clear();
+        list.clear();
         foreach (const QJsonValue & v, jsonArray) {
              stationName = v.toObject().value("Name").toString();
-             stationNumber = v.toObject().value("StationID").toInt();
+             stationNumber = v.toObject().value("StationID").toString().toInt();
              list.append(stationName);
+             stationsAndIndexes.append(std::make_pair(stationName,stationNumber));
         }
         stations(list);
+        onStationChanged(0);
     }
     else {
         qDebug()<<worker->response;
         qDebug()<<"error in stations";
+    }
+}
+
+void Interact::updateDailyJSON()
+{
+    if(currentStation.first == "")
+        return;
+    worker_->disconnect();
+    QString url = "http://localhost:5000/GetDaily";
+    HttpRequestInput input(url,"GET");
+    input.add_var("station",QString::number(currentStation.second));
+    input.add_var("date1",Calendar::Last24Hour().first.toString("yyyy-MM-dd"));
+    connect(worker_,&HttpRequestWorker::on_execution_finished,this,&Interact::updateMeasurements);
+    worker_->execute(&input);
+}
+
+void Interact::onStationChanged(int index)
+{
+    QObject* scombobox = engine_.rootObjects().first()->findChild<QObject*>("stationBoxObject");
+    auto currentText = scombobox->property("currentText").toString();
+    auto it = std::find_if(stationsAndIndexes.begin(),stationsAndIndexes.end(),[=](auto val){if(val.first==currentText) return true; else return false;});
+    if(it!= stationsAndIndexes.end()){
+        currentStation = *it;
+    }
+    qDebug()<<"current text"<<currentStation.first<<currentStation.second;
+    updateDailyJSON();
+}
+void Interact::updateMeasurements(HttpRequestWorker *worker) {
+    for(auto measurement : measurementList_) {
+        measurement->LoadFromJSON(worker->response);
     }
 }

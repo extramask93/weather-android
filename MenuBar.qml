@@ -34,7 +34,6 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         text: appTitle
         font.pixelSize: 0.35*parent.height
-        color: palette.text
       }
     } //menuBar
 }

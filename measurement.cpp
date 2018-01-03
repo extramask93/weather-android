@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <algorithm>
+#include <QDebug>
 
 QList<Reading> Measurement::LoadFromJSON(QString jsonString)
 {
@@ -15,14 +16,20 @@ QList<Reading> Measurement::LoadFromJSON(QString jsonString)
         result.clear();
         foreach (const QJsonValue & v, jsonArray) {
              QString date = v.toObject().value("measurementDate").toString();
-             double measurement = v.toObject().value(measurementName).toDouble();
-             result.append(std::make_pair(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss"),measurement));
+             QString measurement = v.toObject().value(measurementName).toString();
+             result.append(std::make_pair(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss"),measurement.toDouble()));
         }
+        auto rd = GetLatestReading();
+        currentValue(rd.second);
         return result;
 }
 
-Measurement::Measurement(ReadingType readingType, QString jsonString): type_{readingType}, jsonString_{jsonString}
+Measurement::Measurement(QObject *parent, ReadingType readingType, QString jsonString): QObject{parent},type_{readingType}, jsonString_{jsonString}
 {
+    currentValue(0);
+    result = QList<Reading>{};
+    if(jsonString_!="")
+        LoadFromJSON(jsonString);
 }
 
 Reading Measurement::GetLatestReading()
@@ -48,6 +55,7 @@ QList<Reading> Measurement::GetReadingsByDate(QDateTime from, QDateTime to)
 
 QString Measurement::readingToString(ReadingType reading)
 {
+    //qDebug()<<"reading to string"<<(int)reading;
     switch (reading) {
     case ReadingType::temperature:
         return "temperature";

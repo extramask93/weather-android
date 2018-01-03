@@ -52,13 +52,14 @@ public:
 
     QString http_attribute_encode(QString attribute_name, QString input);
     void execute(HttpRequestInput *input);
-
+    void setInput(HttpRequestInput *input);
 signals:
     void on_execution_finished(HttpRequestWorker *worker);
-
+public slots:
+    void execute();
 private:
     QNetworkAccessManager *manager;
-
+    HttpRequestInput *input_;
 private slots:
     void on_manager_finished(QNetworkReply *reply);
 

@@ -3,13 +3,17 @@
 
 #include <QObject>
 #include <QDateTime>
-
+#include "propertyhelper.h"
 typedef std::pair<QDateTime,double> Reading;
 enum class ReadingType {temperature, humidity, co2, lux, soil, battery};
 
-class Measurement
+class Measurement:public QObject
 {
-    explicit Measurement(ReadingType readingType, QString jsonString="");
+    Q_OBJECT
+    AUTO_PROPERTY(double, currentValue)
+public:
+    explicit Measurement(QObject *parent,ReadingType readingType, QString jsonString="");
+
 public:
     QList<std::pair<QDateTime,double>> LoadFromJSON(QString jsonString);
     Reading GetLatestReading();

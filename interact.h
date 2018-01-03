@@ -2,10 +2,13 @@
 #define INTERACT_H
 
 #include <QObject>
+#include <QList>
+#include "measurement.h"
 #include "propertyhelper.h"
 
 class QQmlApplicationEngine;
 class HttpRequestWorker;
+class Measurement;
 class QStringList;
 class Interact : public QObject
 {
@@ -14,16 +17,24 @@ class Interact : public QObject
 public:
     explicit Interact(QObject *parent,QQmlApplicationEngine &engine);
     void Run();
-    void RetrieveStations();
 public slots:
+    void RetrieveStations();
+    void onUpdateChartSignal(QString type);
     void onLoginSignal(QString username, QString password);
     void onLogOutSignal();
     void handleResult(HttpRequestWorker *);
     void handleLogOutResult(HttpRequestWorker *);
     void handleRetrieveStationsResult(HttpRequestWorker *);
+    void updateMeasurements(HttpRequestWorker *);
+    void updateDailyJSON();
+    void onStationChanged(int index);
 private:
     QQmlApplicationEngine &engine_;
+    QList<Measurement*> measurementList_;
     QObject *rootObject_;
+    HttpRequestWorker *worker_;
+    std::pair<QString, int> currentStation;
+    QList<std::pair<QString,int>> stationsAndIndexes;
 };
 
 #endif // INTERACT_H

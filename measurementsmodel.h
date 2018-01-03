@@ -19,6 +19,8 @@ public slots:
     void getTodayData(QAbstractSeries *series);
     void getWeekData(QAbstractSeries *series,QAbstractAxis *axis);
     void handleTodayData(HttpRequestWorker*);
+    void populateIcons();
+   // void updateChartData(QAbstractSeries *series, QAbstractAxis *axis, QString type, QString period);
     //void getMonthData(QAbstractSeries *series);
     //void getYearData(QAbstractSeries *series);
 

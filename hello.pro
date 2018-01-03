@@ -1,7 +1,7 @@
 TEMPLATE = app
 
 QT += core gui qml quick charts
-CONFIG += c++11
+CONFIG += c++14 no-openssl
 
 SOURCES += main.cpp \
     startup.cpp \

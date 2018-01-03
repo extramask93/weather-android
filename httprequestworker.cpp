@@ -36,7 +36,7 @@ void HttpRequestInput::add_file(QString variable_name, QString local_filename, Q
 
 
 HttpRequestWorker::HttpRequestWorker(QObject *parent)
-    : QObject(parent), manager(NULL)
+    : QObject(parent), manager(NULL), input_{nullptr}
 {
     qsrand(QDateTime::currentDateTime().toTime_t());
 
@@ -95,7 +95,9 @@ QString HttpRequestWorker::http_attribute_encode(QString attribute_name, QString
 void HttpRequestWorker::execute(HttpRequestInput *input) {
 
     // reset variables
-
+    if(input==nullptr) {
+        return;
+    }
     QByteArray request_content = "";
     response = "";
     error_type = QNetworkReply::NoError;
@@ -267,6 +269,18 @@ void HttpRequestWorker::execute(HttpRequestInput *input) {
         manager->sendCustomRequest(request, input->http_method.toLatin1(), &buff);
     }
 
+}
+
+void HttpRequestWorker::setInput(HttpRequestInput *input)
+{
+    input_=input;
+}
+
+void HttpRequestWorker::execute()
+{
+    if(input_ != nullptr) {
+        execute(input_);
+    }
 }
 
 void HttpRequestWorker::on_manager_finished(QNetworkReply *reply) {

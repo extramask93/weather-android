@@ -1,13 +1,16 @@
 import QtQuick 2.0
 import QtCharts 2.0
+import QtQuick.Controls 2.1
 Item {
+
     property alias chart: chartID
+    property alias periodBox: periodBox
     ChartView {
         id : chartID
-        anchors.top: parent
         height: parent.height/2
         width: parent.width
         antialiasing: true
+        objectName: "chartObject"
         LineSeries {
             axisY: ValueAxis {
                 titleText: "temperature"
@@ -15,17 +18,26 @@ Item {
                 max: 4
             }
             axisX: DateTimeAxis {
-                //min: new Date(1514647447511)
-                //max: new Date(1599999999999)
                 titleText: "date"
                 format: "yyyy,MM,d"
                 labelsAngle: 90
             }
         }
     }
+    ComboBox {
+        id: periodBox
+        objectName: "periodBoxObject"
+        anchors.top: chartID.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: 2*tileWidth
+        model: ["Today", "3 days","Week", "Month","Year"]
+    }
+
     MouseArea
     {
-        anchors.fill: parent
+        anchors.bottom: parent.bottom
+        height: parent.height/2
+        width: parent.width
         onClicked: if(chartID.visible===true){
                    mychartID.visible=false;}
     }

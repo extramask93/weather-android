@@ -53,7 +53,7 @@ Window {
         property bool active: false
         Behavior on x { NumberAnimation { duration: durationOfMenuAnimation; easing.type: Easing.OutQuad } }
         onXChanged: {
-          menuProgressOpening = (1-Math.abs(optionsID.x/optionsID.width))
+          //menuProgressOpening = (1-Math.abs(optionsID.x/optionsID.width))
         }
         MouseArea {
           anchors.right: parent.right
