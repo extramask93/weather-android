@@ -5,6 +5,11 @@ Calendar::Calendar()
 
 }
 
+QDateTime Calendar::GetTodayDate()
+{
+    return QDateTime::currentDateTime();
+}
+
 DateRange Calendar::Last24Hour()
 {
     auto now = QDateTime::currentDateTime();

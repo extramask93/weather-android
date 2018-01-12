@@ -7,6 +7,7 @@ Item {
     property alias imHeight: imgID.sourceSize.height
     property alias mouseArea: iconMauseArea
     property alias label: label.text
+    property alias label2: label
         Image {
         id: imgID
         z: 1
@@ -18,7 +19,11 @@ Item {
         Label {
             id: label
             anchors.left: imgID.right
-            text: "Test"
+            anchors.top: imgID.top
+            anchors.topMargin: imgID.height/2
+            font.bold: true
+            font.pixelSize: 20
+            text: "no data"
         }
 }
 

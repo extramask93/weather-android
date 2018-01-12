@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QHostAddress>
+#include <QQmlApplicationEngine>
 #include "propertyhelper.h"
 
 class LoginHandler : public QObject
@@ -12,12 +13,14 @@ class LoginHandler : public QObject
     AUTO_PROPERTY(QString, ip)
     AUTO_PROPERTY(bool, isLogged)
     AUTO_PROPERTY(QString, message)
+    QQmlApplicationEngine &engine_;
 public:
-    explicit LoginHandler(QObject *parent = nullptr);
+    explicit LoginHandler(QQmlApplicationEngine  &engine,QObject *parent = nullptr);
     enum State {Login, Main, Settings};
     Q_ENUM(State)
     AUTO_PROPERTY(State, state)
 public slots:
+    void onLoginScreenLoaded();
     void doLogin(QString name, QString password);
     void doChangeState(State s);
 signals:

@@ -4,26 +4,27 @@
 #include <QObject>
 #include <QtCharts>
 #include "httprequestworker.h"
+#include "measurement.h"
 class QQuickView;
 class MeasurementsModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit MeasurementsModel(QObject *parent = nullptr);
+    explicit MeasurementsModel(QObject *parent, QAbstractSeries *series);
 protected:
-    QList<QVector<QPointF>> data_;
+    QVector<QPointF> data_;
     QQuickView *appView_;
+    QAbstractSeries *series_;
+    QString type_;
 Q_SIGNALS:
 
 public slots:
-    void getTodayData(QAbstractSeries *series);
-    void getWeekData(QAbstractSeries *series,QAbstractAxis *axis);
+    void getTodayData(int station, QString readingtype);
+    void getLast3DaysData(int station, QString readingtype);
+    void getWeeklyData(int station,QString readingtype);
+    void getMonthlyData(int station, QString readingtype);
+    void getYearlyData(int station, QString readingtype);
     void handleTodayData(HttpRequestWorker*);
-    void populateIcons();
-   // void updateChartData(QAbstractSeries *series, QAbstractAxis *axis, QString type, QString period);
-    //void getMonthData(QAbstractSeries *series);
-    //void getYearData(QAbstractSeries *series);
-
 };
 
 #endif // MEASUREMENTSMODEL_H

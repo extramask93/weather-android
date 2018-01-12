@@ -19,6 +19,8 @@ QList<Reading> Measurement::LoadFromJSON(QString jsonString)
              QString measurement = v.toObject().value(measurementName).toString();
              result.append(std::make_pair(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss"),measurement.toDouble()));
         }
+        if(result.empty())
+            return QList<Reading>{};
         auto rd = GetLatestReading();
         currentValue(rd.second);
         return result;
@@ -26,7 +28,8 @@ QList<Reading> Measurement::LoadFromJSON(QString jsonString)
 
 Measurement::Measurement(QObject *parent, ReadingType readingType, QString jsonString): QObject{parent},type_{readingType}, jsonString_{jsonString}
 {
-    currentValue(0);
+    currentValue(-300);
+    unit(readingUnit(readingType));
     result = QList<Reading>{};
     if(jsonString_!="")
         LoadFromJSON(jsonString);
@@ -67,6 +70,28 @@ QString Measurement::readingToString(ReadingType reading)
         return "lux";
     case ReadingType::soil:
         return "soil";
+    case ReadingType::battery:
+        return "battery";
+    default:
+        return "";
+    }
+}
+QString Measurement::readingUnit(ReadingType reading)
+{
+    //qDebug()<<"reading to string"<<(int)reading;
+    switch (reading) {
+    case ReadingType::temperature:
+        return "°C";
+    case ReadingType::humidity:
+        return "%";
+    case ReadingType::co2:
+        return "ppm";
+    case ReadingType::lux:
+        return "lux";
+    case ReadingType::soil:
+        return "%";
+    case ReadingType::battery:
+        return "%";
     default:
         return "";
     }

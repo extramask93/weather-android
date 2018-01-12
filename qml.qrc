@@ -18,5 +18,11 @@
         <file>Images/sun.png</file>
         <file>Images/thermometer.png</file>
         <file>Images/water-drop.png</file>
+        <file>Images/nodata.png</file>
+        <file>Images/battery(0).png</file>
+        <file>Images/battery(10).png</file>
+        <file>Images/battery(80).png</file>
+        <file>Images/battery(50).png</file>
+		<file>Images/battery(30).png</file>
     </qresource>
 </RCC>

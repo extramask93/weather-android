@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QList>
 #include "measurement.h"
+#include "measurementsmodel.h"
 #include "propertyhelper.h"
 
 class QQmlApplicationEngine;
@@ -18,6 +19,7 @@ public:
     explicit Interact(QObject *parent,QQmlApplicationEngine &engine);
     void Run();
 public slots:
+    void onMainViewLoaded();
     void RetrieveStations();
     void onUpdateChartSignal(QString type);
     void onLoginSignal(QString username, QString password);
@@ -35,6 +37,7 @@ private:
     HttpRequestWorker *worker_;
     std::pair<QString, int> currentStation;
     QList<std::pair<QString,int>> stationsAndIndexes;
+    MeasurementsModel *model;
 };
 
 #endif // INTERACT_H

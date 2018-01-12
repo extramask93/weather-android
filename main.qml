@@ -32,7 +32,7 @@ Window {
             switch(v)
             {
             case 0:
-                return "MainView.qml";
+                return "LoginScreen.qml";
                 break;
             case 1:
                 return "MainView.qml";
@@ -46,6 +46,7 @@ Window {
         }
     }
     SidePanel {
+        Component.onCompleted: LoginHandler.onLoginScreenLoaded()
         id: optionsID
         width: parent.width/2
         x: -optionsID.width

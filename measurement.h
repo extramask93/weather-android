@@ -11,6 +11,7 @@ class Measurement:public QObject
 {
     Q_OBJECT
     AUTO_PROPERTY(double, currentValue)
+    AUTO_PROPERTY(QString, unit)
 public:
     explicit Measurement(QObject *parent,ReadingType readingType, QString jsonString="");
 
@@ -20,6 +21,7 @@ public:
     QList<Reading> GetReadingsByDate(QDateTime from, QDateTime to);
 protected:
     QString readingToString(ReadingType reading);
+    QString readingUnit(ReadingType reading);
     ReadingType type_;
     QString jsonString_;
     QDateTime date;

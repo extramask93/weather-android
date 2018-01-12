@@ -26,14 +26,17 @@ Interact::Interact(QObject *parent, QQmlApplicationEngine &engine):QObject{paren
     engine_.rootContext()->setContextProperty("Lux",lux);
     Measurement *co2 = new Measurement(this,ReadingType::co2);
     engine_.rootContext()->setContextProperty("Co2",co2);
+    Measurement *soil = new Measurement(this,ReadingType::soil);
+    engine_.rootContext()->setContextProperty("Soil",soil);
+    Measurement *battery = new Measurement(this,ReadingType::battery);
+    engine_.rootContext()->setContextProperty("Battery",battery);
     measurementList_.append(temperature);
     measurementList_.append(humidity);
     measurementList_.append(lux);
     measurementList_.append(co2);
-    QTimer *timer = new QTimer{this};
-    connect(timer,&QTimer::timeout,this,&Interact::updateDailyJSON);
-    updateDailyJSON();
-    timer->start(3600);
+    measurementList_.append(soil);
+    measurementList_.append(battery);
+
 }
 
 void Interact::Run()
@@ -43,13 +46,21 @@ void Interact::Run()
     rootObject_ = engine_.rootObjects()[0];
     QObject* home = engine_.rootObjects().first()->findChild<QObject*>("loginObject");
     QObject *logout = engine_.rootObjects().first()->findChild<QObject*>("sidePanelObject");
-    QObject *mainView = engine_.rootObjects().first()->findChild<QObject*>("mainViewObject");
     if(home !=nullptr)
-        connect(home, SIGNAL(loginSignal(QString, QString)), this, SLOT(onLoginSignal(QString,QString)));
+    connect(home, SIGNAL(loginSignal(QString, QString)), this, SLOT(onLoginSignal(QString,QString)));
     connect(logout, SIGNAL(logOutSignal()),this,SLOT(onLogOutSignal()));
+
+}
+
+void Interact::onMainViewLoaded()
+{
+    QObject *mainView = engine_.rootObjects().first()->findChild<QObject*>("mainViewObject");
     connect(mainView, SIGNAL(updateChart(QVariant, QString)),this,SLOT(onUpdateChartSignal(QVariant,QString)));
     connect(mainView,SIGNAL(loaded()),this,SLOT(RetrieveStations()));
+    QTimer *timer = new QTimer{this};
+    connect(timer,&QTimer::timeout,this,&Interact::updateDailyJSON);
     RetrieveStations();
+    timer->start(3600);
 }
 
 void Interact::RetrieveStations()
@@ -64,14 +75,38 @@ void Interact::RetrieveStations()
 
 void Interact::onUpdateChartSignal(QString type)
 {
+    static QString lasttype;
+    if(type=="")
+        type=lasttype;
+    lasttype=type;
     QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("chartObject");
-    chart->setProperty("title","Dupa");
+    QObject *pbox = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("periodBoxObject");
+    int index = pbox->property("currentIndex").toInt();
+    chart->setProperty("title",type);
     QAbstractSeries * series;
-    QMetaObject::invokeMethod(chart,"series",Qt::AutoConnection,Q_RETURN_ARG(QAbstractSeries*,series),Q_ARG(int,0));
+    QMetaObject::invokeMethod(chart,"series",Qt::AutoConnection,Q_RETURN_ARG(QAbstractSeries*,series),Q_ARG(int,1));
     QLineSeries *ln = static_cast<QLineSeries*>(series);
     auto axes = ln->attachedAxes();
-    axes.at(0)->setTitleText("date");
-    axes.at(1)->setTitleText("ppm");
+         model = new MeasurementsModel{this,series};
+    switch(index) {
+    case 0:
+        model->getTodayData(currentStation.second,type);
+        break;
+    case 1:
+        model->getLast3DaysData(currentStation.second,type);
+        break;
+    case 2:
+        model->getWeeklyData(currentStation.second,type);
+        break;
+    case 3:
+        model->getMonthlyData(currentStation.second,type);
+        break;
+    case 4:
+        model->getYearlyData(currentStation.second,type);
+        break;
+    default:
+        break;
+    }
 }
 
 void Interact::onLoginSignal(QString username, QString password)

@@ -2,10 +2,21 @@
 #include <iostream>
 #include <QString>
 #include <QDebug>
-LoginHandler::LoginHandler(QObject *parent) : QObject(parent)
+LoginHandler::LoginHandler(QQmlApplicationEngine &engine,QObject *parent) : QObject(parent), engine_{engine}
 {
     isLogged(false);
     state(State::Login);
+}
+
+void LoginHandler::onLoginScreenLoaded()
+{
+    qDebug()<<engine_.baseUrl().toString();
+    qDebug()<<engine_.rootObjects().isEmpty();
+    //.first()->findChild<QObject*>("loginObject");
+    //auto username = home->findChild<QObject*>("userTextObject");
+    //auto password = home->findChild<QObject*>("passwordTextObject");
+    //password->setProperty("text","cloakengage2@gmail.com");
+    //username->setProperty("text","admin123");
 }
 
 void LoginHandler::doLogin(QString name, QString password)
