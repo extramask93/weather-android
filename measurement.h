@@ -19,9 +19,10 @@ public:
     QList<std::pair<QDateTime,double>> LoadFromJSON(QString jsonString);
     Reading GetLatestReading();
     QList<Reading> GetReadingsByDate(QDateTime from, QDateTime to);
+    static ReadingType StringToReading(QString reading);
+    static QString readingUnit(ReadingType reading);
 protected:
     QString readingToString(ReadingType reading);
-    QString readingUnit(ReadingType reading);
     ReadingType type_;
     QString jsonString_;
     QDateTime date;

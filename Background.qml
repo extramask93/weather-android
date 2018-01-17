@@ -21,7 +21,7 @@ Item {
         height: tileHeight*2
         fillMode: Image.Tile
         anchors.bottom: parent.bottom
-        source: "/Images/ground.svg"
+        source: "/Images/ground.jpg"
         sourceSize.height: tileHeight
         sourceSize.width: tileWidth
         }

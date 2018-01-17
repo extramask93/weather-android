@@ -6,6 +6,9 @@ Item {
 
     property alias chart: chartID
     property alias periodBox: periodBox
+    property alias sc: scseries
+    property alias date: dateAxID
+    property alias val: valueAxID
     ColumnLayout {
         width: parent.width
         anchors.fill: parent
@@ -26,29 +29,22 @@ Item {
         id : chartID
         height: parent.height/2
         width: parent.width
-        anchors.centerIn: parent
+        anchors.top: periodBox.bottom
         antialiasing: true
         legend.visible: false
         objectName: "chartObject"
         ValueAxis {
-            id: axisY
-            titleText: "temperature"
-            min: 0
-            max: 100
+            id: valueAxID
         }
         DateTimeAxis {
-            id: axisX
-            titleText: "date"
-            format: "yy,MM,dd"
+            id: dateAxID
             labelsAngle: 90
-        }
-        LineSeries {
-            axisX: axisX
-            axisY: axisY
+            titleText: "date"
         }
         ScatterSeries {
-            axisX: axisX
-            axisY: axisY
+            id: scseries
+            axisX:dateAxID
+            axisY: valueAxID
         }
     }
 

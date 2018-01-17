@@ -28,8 +28,9 @@ void MeasurementsModel::getTodayData(int station, QString readingtype)
     worker->execute(&input);
     QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
     auto axes = lineseries->attachedAxes();
-    axes.at(0)->setMin(Calendar::GetTodayDate().addDays(-1));
-    axes.at(0)->setMax(Calendar::GetTodayDate());
+    axes.at(1)->setTitleText(readingtype + '['+Measurement::readingUnit(Measurement::StringToReading(type_))+']');
+    QDateTimeAxis *dt = static_cast<QDateTimeAxis*>(axes.at(0));
+    dt->setFormat("yy-MM-dd");
 }
 
 void MeasurementsModel::getLast3DaysData(int station, QString readingtype)
@@ -46,8 +47,9 @@ void MeasurementsModel::getLast3DaysData(int station, QString readingtype)
     worker->execute(&input);
     QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
     auto axes = lineseries->attachedAxes();
-    axes.at(0)->setMin(Calendar::GetTodayDate().addDays(-3));
-    axes.at(0)->setMax(Calendar::GetTodayDate());
+    axes.at(1)->setTitleText(readingtype + '['+Measurement::readingUnit(Measurement::StringToReading(type_))+']');
+    QDateTimeAxis *dt = static_cast<QDateTimeAxis*>(axes.at(0));
+    dt->setFormat("yy-MM-dd");
 }
 
 void MeasurementsModel::getWeeklyData(int station, QString readingtype)
@@ -64,14 +66,16 @@ void MeasurementsModel::getWeeklyData(int station, QString readingtype)
     worker->execute(&input);
     QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
     auto axes = lineseries->attachedAxes();
-    axes.at(0)->setMin(Calendar::GetTodayDate().addDays(-7));
-    axes.at(0)->setMax(Calendar::GetTodayDate());
+    axes.at(1)->setTitleText(readingtype + '['+Measurement::readingUnit(Measurement::StringToReading(type_))+']');
+    QDateTimeAxis *dt = static_cast<QDateTimeAxis*>(axes.at(0));
+    dt->setFormat("yy-MM-dd");
 }
 
 void MeasurementsModel::getMonthlyData(int station, QString readingtype)
 {
-        type_=readingtype;
+    type_=readingtype;
     QString url = "http://localhost:5000/GetDaily";
+    QChartView view;
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input(url,"GET");
     auto period = Calendar::LastMonth();
@@ -82,8 +86,10 @@ void MeasurementsModel::getMonthlyData(int station, QString readingtype)
     worker->execute(&input);
     QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
     auto axes = lineseries->attachedAxes();
-    axes.at(0)->setMin(Calendar::GetTodayDate().addMonths(-1));
-    axes.at(0)->setMax(Calendar::GetTodayDate());
+    lineseries->clear();
+    axes.at(1)->setTitleText(readingtype + '['+Measurement::readingUnit(Measurement::StringToReading(type_))+']');
+    QDateTimeAxis *dt = static_cast<QDateTimeAxis*>(axes.at(0));
+    //dt->setFormat("yy-MM-dd");
 }
 
 void MeasurementsModel::getYearlyData(int station, QString readingtype)
@@ -100,8 +106,9 @@ void MeasurementsModel::getYearlyData(int station, QString readingtype)
     worker->execute(&input);
     QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
     auto axes = lineseries->attachedAxes();
-    axes.at(0)->setMin(Calendar::GetTodayDate().addYears(-1));
-    axes.at(0)->setMax(Calendar::GetTodayDate());
+    axes.at(1)->setTitleText(readingtype + '['+Measurement::readingUnit(Measurement::StringToReading(type_))+']');
+    QDateTimeAxis *dt = static_cast<QDateTimeAxis*>(axes.at(0));
+    dt->setFormat("yy-MM-dd");
 }
 
 void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
@@ -119,8 +126,25 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
              data_.append(QPointF(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss").toMSecsSinceEpoch(),value.toDouble()));
              qDebug() << date<<value;
         }
+        /*find smallest and biggest date*/
+        auto comp = [](const QPointF &a, const QPointF &b) {return a.x() < b.x();};
+        auto min = std::min_element(data_.begin(),data_.end(),comp);
+        auto max = std::max_element(data_.begin(),data_.end(),comp);
         QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
+        auto axes = lineseries->attachedAxes();
+            axes.at(0)->setMin(QDateTime::fromMSecsSinceEpoch(min->x()).addDays(-1));
+            axes.at(0)->setMax(QDateTime::fromMSecsSinceEpoch(max->x()).addDays(1));
+        /*find smallest and biggest measurement*/
+        auto compy = [](const QPointF &a, const QPointF &b) {return a.y() < b.y();};
+        auto miny = std::min_element(data_.begin(),data_.end(),compy);
+        auto maxy = std::max_element(data_.begin(),data_.end(),compy);
+        if(miny->y()<0)
+            axes.at(1)->setMin(miny->y()-20);
+        else
+            axes.at(1)->setMin(0);
+        axes.at(1)->setMax(maxy->y()+20);
         lineseries->replace(data_);
+
     }
 }
 

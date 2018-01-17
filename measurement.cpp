@@ -55,7 +55,23 @@ QList<Reading> Measurement::GetReadingsByDate(QDateTime from, QDateTime to)
     std::copy_if(result.begin(),result.end(),range.begin(),pred);
     return range;
 }
-
+ReadingType Measurement::StringToReading(QString reading)
+{
+    if(reading=="temperature")
+        return ReadingType::temperature;
+    if(reading=="humidity")
+        return ReadingType::humidity;
+    if(reading=="co2")
+        return ReadingType::co2;
+    if(reading=="lux")
+        return ReadingType::lux;
+    if(reading=="soil")
+        return ReadingType::soil;
+    if(reading=="battery")
+        return ReadingType::battery;
+    else
+        return ReadingType::temperature;
+    }
 QString Measurement::readingToString(ReadingType reading)
 {
     //qDebug()<<"reading to string"<<(int)reading;

@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.1
+import QtQml 2.2
 Item {
     signal updateChart(var chartObject, string type)
     signal loaded()
@@ -20,6 +21,7 @@ Item {
         anchors.fill: parent
         id: mychartID
         objectName: "mychartObject"
+        visible: false
         z: 2
     }
     MeasureIcon
@@ -130,8 +132,31 @@ Item {
         y: (6*tileHeight)
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
-                Interact.onUpdateChartSignal("soil")
+                //Interact.onUpdateChartSignal("soil");
+                getData();
         }
         label: Soil.currentValue>-200?Soil.currentValue+" "+Soil.unit:"No data"
+    }
+    function getData() {
+        var xhr = new XMLHttpRequest;
+        console.log("getdata")
+        xhr.open("GET","http://localhost:5000/GetDaily?station=1&date1=17-12-26&date2=18-01-13");
+        xhr.send(null);
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState == XMLHttpRequest.DONE) {
+                var a = JSON.parse(xhr.responseText)
+                parseData(a);
+            }
+        }
+    }
+    function parseData(data) {
+        mychartID.sc.clear();
+        mychartID.val.max = 100;
+        mychartID.val.min = -20;
+        //mychartID.date.max = toMsecsSinceEpoch(new Date(2018, 2, 15));
+        mychartID.chart.update();
+        for(var i in data.measurements) {
+            console.log("soil:"+data.measurements[i].soil+", date:"+data.measurements[i].measurementDate);
+        }
     }
 }

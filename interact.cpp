@@ -84,8 +84,8 @@ void Interact::onUpdateChartSignal(QString type)
     int index = pbox->property("currentIndex").toInt();
     chart->setProperty("title",type);
     QAbstractSeries * series;
-    QMetaObject::invokeMethod(chart,"series",Qt::AutoConnection,Q_RETURN_ARG(QAbstractSeries*,series),Q_ARG(int,1));
-    QLineSeries *ln = static_cast<QLineSeries*>(series);
+    QMetaObject::invokeMethod(chart,"series",Qt::AutoConnection,Q_RETURN_ARG(QAbstractSeries*,series),Q_ARG(int,0));
+    QScatterSeries *ln = static_cast<QScatterSeries*>(series);
     auto axes = ln->attachedAxes();
          model = new MeasurementsModel{this,series};
     switch(index) {
@@ -195,6 +195,8 @@ void Interact::updateDailyJSON()
 void Interact::onStationChanged(int index)
 {
     QObject* scombobox = engine_.rootObjects().first()->findChild<QObject*>("stationBoxObject");
+    if(scombobox==nullptr)
+        return;
     auto currentText = scombobox->property("currentText").toString();
     auto it = std::find_if(stationsAndIndexes.begin(),stationsAndIndexes.end(),[=](auto val){if(val.first==currentText) return true; else return false;});
     if(it!= stationsAndIndexes.end()){

@@ -6,8 +6,8 @@ import QtQuick.Controls 2.1
 Window {
     id: rootID
     visible: true
-    width: 480
-    height: 640
+    width: Screen.width
+    height: Screen.height
     title: qsTr("EnvController")
     property int nrOfHorizontalTiles: 4
     property string appTitle: "EnvController"
@@ -18,13 +18,13 @@ Window {
      property int durationOfMenuAnimation: 500
     Rectangle {
         anchors.bottom: parent.bottom
-        height: parent.height-50
+        height: parent.height-(parent.height*0.10)
         width: parent.width
     Loader {
         id: loaderID
         objectName: "loaderObject"
         anchors.fill: parent
-        height: parent.height-50
+        height: parent.height-(parent.height*0.10)
         property bool loginSuccess: false
         source: selectSource(LoginHandler.state)
         function selectSource(v) {

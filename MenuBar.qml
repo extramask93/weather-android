@@ -7,7 +7,7 @@ Item {
       anchors.top: parent.top
       anchors.topMargin: 0
       width: parent.width
-      height: 50
+      height: (rootID.height*0.10)
       color: "green"
       Rectangle {
         id: menuButton

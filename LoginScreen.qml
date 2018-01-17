@@ -8,13 +8,16 @@ Item {
         anchors.fill: parent
         Background {}
     ColumnLayout {
-        anchors.fill: parent
+        width: rootID.width/2
+        height: parent.height
+        anchors.centerIn: parent
         ColumnLayout { /* username */
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 4
             Label { text: "Username"; color: "black"}
             TextField {
                 id: userNameID
+                Layout.fillWidth: true
                 objectName: "userTextField"
                 focus: true
                 text: "cloakengage2@gmail.com"
@@ -23,6 +26,7 @@ Item {
             Label { text:"Password"; color: "black" }
             TextField {
                 id: passwordID
+                Layout.fillWidth: true
                 objectName: "passwordTextField"
                 text: "admin123"
                 echoMode: TextInput.Password
