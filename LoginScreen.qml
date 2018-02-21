@@ -60,6 +60,7 @@ Item {
             Button {
                 text: "Login"
                 onClicked: {
+                    infoLabelID.text = ""
                     LoginHandler.login = userNameID.text
                     LoginHandler.password = passwordID.text
                     LoginHandler.rememberMe = rememberCheckBox.checked

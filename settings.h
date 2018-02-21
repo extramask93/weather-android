@@ -16,7 +16,7 @@ class Settings : public QObject
 public:
     explicit Settings(QObject *parent, QString filename);
     QString LoadJSON();
-    void ParseJSON(const QString & content);
+    void ParseJSON();
 
 signals:
     void NotifyStatusMessage(QString const msg);

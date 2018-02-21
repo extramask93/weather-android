@@ -8,12 +8,10 @@ class SettingsManager: public QObject
     Q_OBJECT
 public:
     SettingsManager(QObject *parent=nullptr);
-    Q_INVOKABLE QVariant GetSetting(QString group, QString name);
-    Q_INVOKABLE QVariant getSetting(QString group, QString name);
-    Q_INVOKABLE int saveSetting(QString group, QString name, QVariant value);
-    Q_INVOKABLE int SaveSetting(QString group, QString name, QVariant value);
-private:
-    QSettings settings_;
+    Q_INVOKABLE static QVariant GetSetting(QString group, QString name);
+    Q_INVOKABLE static QVariant getSetting(QString group, QString name);
+    Q_INVOKABLE static int saveSetting(QString group, QString name, QVariant value);
+    Q_INVOKABLE static int SaveSetting(QString group, QString name, QVariant value);
 };
 
 #endif // SETTINGSMANAGER_H

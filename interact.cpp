@@ -15,8 +15,7 @@
 #include <QAbstractAxis>
 #include <QtConcurrent/QtConcurrent>
 #include "calendar.h"
-#include "settingshandler.h"
-Interact::Interact(QObject *parent, QQmlApplicationEngine &engine, SettingsHandler *settings):QObject{parent},engine_{engine}, worker_{new HttpRequestWorker(nullptr)}, settings_{settings}
+Interact::Interact(QObject *parent, QQmlApplicationEngine &engine):QObject{parent},engine_{engine}, worker_{new HttpRequestWorker(nullptr)}
 {
     currentStation = std::make_pair("",0);
     Measurement *temperature = new Measurement(this,ReadingType::temperature);
@@ -43,8 +42,6 @@ Interact::Interact(QObject *parent, QQmlApplicationEngine &engine, SettingsHandl
 
 void Interact::Run()
 {
-
-//////////////////////////////////////////////////////////////////////////////
     rootObject_ = engine_.rootObjects()[0];
     QObject* home = engine_.rootObjects().first()->findChild<QObject*>("loginObject");
     QObject *logout = engine_.rootObjects().first()->findChild<QObject*>("sidePanelObject");
@@ -57,7 +54,6 @@ void Interact::Run()
 void Interact::onMainViewLoaded()
 {
     QObject *mainView = engine_.rootObjects().first()->findChild<QObject*>("mainViewObject");
-    //connect(mainView, SIGNAL(updateChart(QVariant, QString)),this,SLOT(onUpdateChartSignal(QVariant,QString)));
     connect(mainView,SIGNAL(loaded()),this,SLOT(RetrieveStations()));
     connect(timer,&QTimer::timeout,this,&Interact::updateDailyJSON);
     RetrieveStations();
@@ -112,7 +108,7 @@ void Interact::onUpdateChartSignal(QString type)
 
 void Interact::onLoginSignal(QString username, QString password)
 {
-    QString url = "http://"+settings_->ip()+":"+QString::number(settings_->port())+"/LogIn";
+    QString url = "http://"+QString("localhost")+":"+"5000"+"/LogIn";
     HttpRequestInput input(url,"POST");
     input.add_var("email",username);
     input.add_var("password",password);

@@ -6,7 +6,6 @@
 #include "measurement.h"
 #include "measurementsmodel.h"
 #include "propertyhelper.h"
-#include "settingshandler.h"
 
 class QQmlApplicationEngine;
 class HttpRequestWorker;
@@ -18,7 +17,7 @@ class Interact : public QObject
     Q_OBJECT
     AUTO_PROPERTY(QStringList, stations)
 public:
-    explicit Interact(QObject *parent,QQmlApplicationEngine &engine, SettingsHandler *settings);
+    explicit Interact(QObject *parent,QQmlApplicationEngine &engine);
     void Run();
 public slots:
     void onMainViewLoaded();

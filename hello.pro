@@ -11,7 +11,6 @@ SOURCES += main.cpp \
     measurementsmodel.cpp \
     measurement.cpp \
     calendar.cpp \
-    settingshandler.cpp \
     settingsmanager.cpp
 
 RESOURCES += qml.qrc \
@@ -51,5 +50,4 @@ HEADERS += \
     measurementsmodel.h \
     measurement.h \
     calendar.h \
-    settingshandler.h \
     settingsmanager.h

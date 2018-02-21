@@ -6,7 +6,7 @@
 static auto RESOURCE_PREFIX = QStringLiteral(":/json");
 Settings::Settings(QObject *parent, QString filename) : QObject(parent), filename_{filename}, stat_{*new QStringListModel{this}}
 {
-    ParseJSON(ReadJSONFromInternalResource());
+    ParseJSON();
 }
 
 QString Settings::LoadJSON()
@@ -30,7 +30,7 @@ QString Settings::LoadJSON()
     }
 }
 
-void Settings::ParseJSON(const QString &content)
+void Settings::ParseJSON()
 {
     QString rawJSON = LoadJSON();
     if(rawJSON.size()==0)

@@ -1,11 +1,12 @@
 #include "settingsmanager.h"
 
-SettingsManager::SettingsManager(QObject *parent) :QObject{parent}, settings_{"Jozek","Robot"}
+SettingsManager::SettingsManager(QObject *parent) :QObject{parent}
 {
 }
 
 QVariant SettingsManager::GetSetting(QString group, QString name)
 {
+    QSettings settings_{"Jozek","Robot"};
     settings_.beginGroup(group);
     QVariant result = settings_.value(name,"asd");
     settings_.endGroup();
@@ -24,6 +25,7 @@ int SettingsManager::saveSetting(QString group, QString name, QVariant value)
 
 int SettingsManager::SaveSetting(QString group, QString name, QVariant value)
 {
+    QSettings settings_{"Jozek","Robot"};
     settings_.beginGroup(group);
     settings_.remove(name);
     settings_.setValue(name,value);

@@ -8,7 +8,6 @@
 #include "settings.h"
 #include "interact.h"
 #include "measurementsmodel.h"
-#include "settingshandler.h"
 #include "settingsmanager.h"
 int main(int argc, char *argv[])
 {
@@ -17,13 +16,11 @@ int main(int argc, char *argv[])
     Settings settings{nullptr,"settings.json"};
     /*magic happens*/
     auto root_context = engine.rootContext();
-    SettingsHandler *settings2(nullptr);
-    root_context->setContextProperty("ServerSettings",settings2);
     SettingsManager settingsManager{};
     root_context->setContextProperty("SettingsManager",&settingsManager);
     LoginHandler login{&settingsManager};
     root_context->setContextProperty("LoginHandler",&login);
-    Interact interact{0,engine,settings2};
+    Interact interact{0,engine};
     root_context->setContextProperty("Interact",&interact);
     /*-----------------------------*/
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
