@@ -7,7 +7,7 @@ Item {
       anchors.top: parent.top
       anchors.topMargin: 0
       width: parent.width
-      height: 50
+      height: (rootID.height*0.10)
       color: "green"
       Rectangle {
         id: menuButton
@@ -24,7 +24,7 @@ Item {
         }
         Image {
             anchors.fill: parent
-            source: "images/more.png"
+            source: "/Images/more.png"
         }
         clip: true
       }
@@ -34,7 +34,6 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         text: appTitle
         font.pixelSize: 0.35*parent.height
-        color: palette.text
       }
     } //menuBar
 }

@@ -1,30 +1,60 @@
 import QtQuick 2.0
 import QtCharts 2.0
+import QtQuick.Controls 2.1
+import QtQuick.Layouts 1.1
 Item {
+
+    property alias chart: chartID
+    property alias periodBox: periodBox
+    property alias sc: scseries
+    property alias date: dateAxID
+    property alias val: valueAxID
+    ColumnLayout {
+        width: parent.width
+        anchors.fill: parent
+        Background {
+            anchors.fill: parent
+        }
+
+        ComboBox {
+            id: periodBox
+            objectName: "periodBoxObject"
+            anchors.bottom: chartID.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 2*tileWidth
+            model: ["Today", "3 days","Week", "Month","Year"]
+            onActivated: Interact.onUpdateChartSignal("")
+        }
     ChartView {
         id : chartID
-        title: "Numerical Data for Dummies"
-        anchors.top: parent
         height: parent.height/2
         width: parent.width
-        legend.visible: false
+        anchors.top: periodBox.bottom
         antialiasing: true
-        LineSeries {
-            axisY: CategoryAxis {
-                min: 0
-                max: 30
-            }
-            XYPoint { x: 0; y: 4.3 }
-            XYPoint { x: 1; y: 4.1 }
-            XYPoint { x: 2; y: 4.7 }
-            XYPoint { x: 3; y: 3.9 }
-            XYPoint { x: 4; y: 5.2 }
+        legend.visible: false
+        objectName: "chartObject"
+        ValueAxis {
+            id: valueAxID
+        }
+        DateTimeAxis {
+            id: dateAxID
+            labelsAngle: 90
+            titleText: "date"
+        }
+        ScatterSeries {
+            id: scseries
+            axisX:dateAxID
+            axisY: valueAxID
         }
     }
+
     MouseArea
     {
-        anchors.fill: parent
+        anchors.top: chartID.bottom
+        height: parent.height/2
+        width: parent.width
         onClicked: if(chartID.visible===true){
                    mychartID.visible=false;}
+    }
     }
 }

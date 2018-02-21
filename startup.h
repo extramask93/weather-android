@@ -3,7 +3,6 @@
 #include <QQmlApplicationEngine>
 #include <QObject>
 #include <QQmlContext>
-#include "mainviewmgr.h"
 
 class Startup : public QObject
 {
@@ -15,8 +14,6 @@ signals:
 public slots:
 private:
     QQmlApplicationEngine &engine_;
-    int abc;
-    MainViewMgr &mainview_;
 };
 
 #endif // STARTUP_H

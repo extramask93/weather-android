@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>MainForm.ui.qml</file>
         <file>VerticalField.qml</file>
         <file>Background.qml</file>
         <file>MeasureIcon.qml</file>
@@ -11,15 +10,19 @@
         <file>Settings.qml</file>
         <file>SidePanel.qml</file>
         <file>MenuBar.qml</file>
-    </qresource>
-    <qresource prefix="/images">
-        <file>co2.png</file>
-        <file>grass.png</file>
-        <file>more.png</file>
-        <file>sky3.jpg</file>
-        <file>sun.png</file>
-        <file>thermometer.png</file>
-        <file>water-drop.png</file>
-        <file>ground.svg</file>
+        <file>Images/co2.png</file>
+        <file>Images/grass.png</file>
+        <file>Images/more.png</file>
+        <file>Images/sky3.jpg</file>
+        <file>Images/sun.png</file>
+        <file>Images/thermometer.png</file>
+        <file>Images/water-drop.png</file>
+        <file>Images/nodata.png</file>
+        <file>Images/battery(0).png</file>
+        <file>Images/battery(10).png</file>
+        <file>Images/battery(80).png</file>
+        <file>Images/battery(50).png</file>
+        <file>Images/battery(30).png</file>
+        <file>Images/ground.jpg</file>
     </qresource>
 </RCC>

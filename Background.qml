@@ -11,7 +11,7 @@ Item {
         height: parent.height
         fillMode: Image.Tile
         id: skyID
-        source: "images/sky3.jpg"
+        source: "/Images/sky3.jpg"
         sourceSize.width: tileWidth
         sourceSize.height: tileHeight
     }
@@ -21,7 +21,7 @@ Item {
         height: tileHeight*2
         fillMode: Image.Tile
         anchors.bottom: parent.bottom
-        source: "images/ground.svg"
+        source: "/Images/ground.jpg"
         sourceSize.height: tileHeight
         sourceSize.width: tileWidth
         }
@@ -31,7 +31,7 @@ Item {
         height: tileHeight
         fillMode: Image.TileHorizontally
         anchors.bottom: groundID.top
-        source: "images/grass.png"
+        source: "/Images/grass.png"
         sourceSize.height: tileHeight
         sourceSize.width: tileWidth
     }

@@ -3,6 +3,9 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 
 Item {
+    objectName: "sidePanelObject"
+    id: sidePanel
+    signal logOutSignal();
     Rectangle {
         color: "green"
         anchors.fill: parent
@@ -25,6 +28,8 @@ Item {
                 }
                 Button {
                     text: "Logout"
+                    onClicked:{ logOutSignal();
+                    }
                 }
             }
         }

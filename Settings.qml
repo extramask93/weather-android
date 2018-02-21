@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
+import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 Item {
     Background {anchors.fill: parent}
@@ -11,26 +12,34 @@ Item {
                 text: "IP:"
             }
             TextField {
-                placeholderText: "192.168.2.1"
+                id: ipFieldID
+                text: SettingsManager.getSetting("Server","ip")
                 focus: true
             }
             Label {
                 text: "Port:"
             }
             TextField {
-                placeholderText: "90"
+                id: portFieldID
+                text: SettingsManager.getSetting("Server","port")
             }
         }
         RowLayout {
             anchors.horizontalCenter: parent.horizontalCenter
             Button {
                 text: "Save"
-                onClicked: loaderID.source =loaderID.loginSuccess ? "MainView.qml" : "LoginScreen.qml"
+                onClicked: {
+                    if(SettingsManager.SaveSetting("Server","ip",ipFieldID.text)) {
+                    }
 
+                    if(SettingsManager.SaveSetting("Server","port",portFieldID.text)) {
+                    }
+                    loaderID.source = "LoginScreen.qml"
+                }
             }
             Button {
                 text: "Cancel"
-                onClicked: loaderID.source =loaderID.loginSuccess ? "MainView.qml" : "LoginScreen.qml"
+                onClicked: loaderID.source = "LoginScreen.qml"
             }
         }
     }

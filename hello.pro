@@ -1,13 +1,21 @@
 TEMPLATE = app
 
 QT += core gui qml quick charts
-CONFIG += c++11
+CONFIG += c++14 no-openssl
 
 SOURCES += main.cpp \
-    startup.cpp \
-    mainviewmgr.cpp
+    loginhandler.cpp \
+    settings.cpp \
+    httprequestworker.cpp \
+    interact.cpp \
+    measurementsmodel.cpp \
+    measurement.cpp \
+    calendar.cpp \
+    settingshandler.cpp \
+    settingsmanager.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+    envmresources.qrc
 MAKEFLAGS = -j
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
@@ -35,5 +43,13 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES +=
 
 HEADERS += \
-    startup.h \
-    mainviewmgr.h
+    loginhandler.h \
+    propertyhelper.h \
+    settings.h \
+    httprequestworker.h \
+    interact.h \
+    measurementsmodel.h \
+    measurement.h \
+    calendar.h \
+    settingshandler.h \
+    settingsmanager.h

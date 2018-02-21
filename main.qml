@@ -4,10 +4,20 @@ import QtQuick.Window 2.0
 import QtCharts 2.0
 import QtQuick.Controls 2.1
 Window {
+    Connections {
+        target: LoginHandler
+        onLoginSuccess:{
+            loaderID.source = "MainView.qml"
+        }
+        onLoggedOut: {
+            loaderID.source = "LoginScreen.qml"
+        }
+    }
+
     id: rootID
     visible: true
-    width: 480
-    height: 640
+    width: Screen.width
+    height: Screen.height
     title: qsTr("EnvController")
     property int nrOfHorizontalTiles: 4
     property string appTitle: "EnvController"
@@ -18,14 +28,14 @@ Window {
      property int durationOfMenuAnimation: 500
     Rectangle {
         anchors.bottom: parent.bottom
-        height: parent.height-50
+        height: parent.height-(parent.height*0.10)
         width: parent.width
     Loader {
         id: loaderID
+        objectName: "loaderObject"
         anchors.fill: parent
-        height: parent.height-50
-        property bool loginSuccess: false
-        source: loginSuccess ? "MainView.qml" : "LoginScreen.qml"
+        height: parent.height-(parent.height*0.10)
+        source: "LoginScreen.qml"
     }
     SidePanel {
         id: optionsID
@@ -35,7 +45,7 @@ Window {
         property bool active: false
         Behavior on x { NumberAnimation { duration: durationOfMenuAnimation; easing.type: Easing.OutQuad } }
         onXChanged: {
-          menuProgressOpening = (1-Math.abs(optionsID.x/optionsID.width))
+          //menuProgressOpening = (1-Math.abs(optionsID.x/optionsID.width))
         }
         MouseArea {
           anchors.right: parent.right
