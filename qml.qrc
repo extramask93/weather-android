@@ -25,5 +25,6 @@
         <file>Images/battery(30).png</file>
         <file>Images/ground.jpg</file>
         <file>Chart.qml</file>
+        <file>config.js</file>
     </qresource>
 </RCC>

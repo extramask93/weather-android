@@ -2,8 +2,9 @@ import QtQuick 2.0
 import QtCharts 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
+import "./config.js" as Config
 Item {
-
+    property variant allConfig: Config.config()
     property alias chart: chartID
     property alias periodBox: periodBox
     Background {
@@ -21,29 +22,39 @@ Item {
             onActivated: {Interact.onUpdateChartSignal("");
             }
         }
-    Chart{
-        id: chartID
-        objectName: "chartObject"
-        height: parent.height*0.6
+    Qchart2 {
+        id:chartID
+        height: parent.height-periodBox.height
         width: parent.width
         anchors.top: periodBox.bottom
-        property int test : 65;
-        onPaint: {
-            line({
-                      labels : Model.dates,
-                      datasets : [
-                          {
-                              fillColor : "rgba(220,220,220,0.9)",
-                              strokeColor : "rgba(220,220,220,1)",
-                              pointColor : "rgba(3,93,49,1)",
-                              pointStrokeColor : "#fff",
-                              data : Model.values
-                          }
-                      ]
-                  },{scaleGridLineColor : "rgba(0,0,0,.5)",
-                    scaleFontColor : "#000",scaleFontSize : 25,
-                     pointDotRadius : 15});
-        }}
+        chartOptions : allConfig[0].options
+        chartType : allConfig[0].type
+        chartData: allConfig[0].data
+     }
+}
+//    Chart{
+//        id: chartID
+//        objectName: "chartObject"
+//        height: parent.height*0.6
+//        width: parent.width
+//        anchors.top: periodBox.bottom
+//        property int test : 65;
+//        onPaint: {
+//            line({
+//                     labels : Model.dates,
+//                     datasets : [
+//                         {
+//                             fillColor : "rgba(220,220,220,0.9)",
+//                             strokeColor : "rgba(220,220,220,1)",
+//                             pointColor : "rgba(3,93,49,1)",
+//                             pointStrokeColor : "#fff",
+//                             data : Model.values
+//                         }
+//                     ]
+//                 },{scaleGridLineColor : "rgba(0,0,0,.5)",
+//                     scaleFontColor : "#000",scaleFontSize : 25,
+//                     pointDotRadius : 15});
+//        }}
     //Timer{
       //  id:t
         //interval: 1
@@ -52,7 +63,6 @@ Item {
         //onTriggered:{
          //   chartID.requestPaint()
         //}
-}
 //    ChartView {
 //        id : chartID
 //        height: parent.height*0.6

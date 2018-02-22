@@ -12,6 +12,8 @@ var dataBar1 = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [{
             label: 'temperature',
+
+            fontSize: 20,
             backgroundColor: color("red").alpha(0.5).rgbString(),
             borderColor: "red",
             borderWidth: 1,
@@ -31,23 +33,33 @@ function config() {
                yAxes: [{
                  scaleLabel: {
                    display: true,
-                   labelString: 'probability'
-                 }
+                   fontSize:20,
+                   fontColor: "#000",
+                   labelString: 'temperature[°C]'
+                 },
+                 ticks: { fontSize: 20,fontColor: "#000",},
+
                }],
                 xAxes: [{
                   scaleLabel: {
                     display: true,
-                    labelString: 'probability'
-                  }
+                    fontSize:20,
+                    fontColor: "#000",
+                    labelString: 'date'
+                  },
+                  ticks: {fontSize:20,fontColor: "#000",},
+
                 }]
              },
             maintainAspectRatio: false,
             legend: {
-                position: 'top'
+                display:false
             },
             title: {
                 display: true,
-                text: 'Chart.js Bar Chart'
+                text: 'Temperature chart',
+                fontSize: 20,
+                fontColor: "#000"
             }
         }
     }

@@ -14,7 +14,8 @@ SOURCES += main.cpp \
     settingsmanager.cpp
 
 RESOURCES += qml.qrc \
-    envmresources.qrc
+    envmresources.qrc \
+    ./qchart2/qchart2.qrc
 MAKEFLAGS = -j
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
