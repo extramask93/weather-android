@@ -6,6 +6,7 @@
 #include "measurement.h"
 #include "measurementsmodel.h"
 #include "propertyhelper.h"
+#include "settingsmanager.h"
 
 class QQmlApplicationEngine;
 class HttpRequestWorker;

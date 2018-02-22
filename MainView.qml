@@ -4,6 +4,7 @@ import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.1
 import QtQml 2.2
 Item {
+    focus: true
     signal updateChart(var chartObject, string type)
     signal loaded()
     objectName: "mainViewObject"
@@ -12,7 +13,8 @@ Item {
     ComboBox {
             objectName: "stationBoxObject"
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 2*tileWidth
+            width: parent.width*0.8
+            height: 100
             opacity: 0.5
             spacing: 4
             model: Interact.stations
@@ -136,6 +138,15 @@ Item {
                 getData();
         }
         label: Soil.currentValue>-200?Soil.currentValue+" "+Soil.unit:"No data"
+    }
+    Keys.onBackPressed: {
+        if(mychartID.visible===true){
+            mychartID.visible=false;
+            event.accepted = true;}
+        else {
+            event.accepted = false;
+            Qt.quit()
+        }
     }
     function getData() {
         var xhr = new XMLHttpRequest;

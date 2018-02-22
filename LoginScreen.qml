@@ -18,7 +18,7 @@ Item {
         anchors.fill: parent
         Background {}
     ColumnLayout {
-        width: rootID.width/2
+        width: rootID.width*0.8
         height: parent.height
         anchors.centerIn: parent
         ColumnLayout { /* username */
@@ -48,6 +48,7 @@ Item {
                 color: "red"
             }
             CheckBox {
+                Layout.fillWidth: true
                 id : rememberCheckBox
                 checked: LoginHandler.rememberMe
                 objectName: "rememberCheckBox"
@@ -55,10 +56,13 @@ Item {
             }
         }
         RowLayout {
+            Layout.fillWidth: true
+            height: 100
             spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
             Button {
                 text: "Login"
+                width: parent.width*0.3
                 onClicked: {
                     infoLabelID.text = ""
                     LoginHandler.login = userNameID.text

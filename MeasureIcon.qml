@@ -22,7 +22,7 @@ Item {
             anchors.top: imgID.top
             anchors.topMargin: imgID.height/2
             font.bold: true
-            font.pixelSize: 20
+            font.pointSize: 20
             text: "no data"
         }
 }

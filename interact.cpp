@@ -63,7 +63,8 @@ void Interact::onMainViewLoaded()
 void Interact::RetrieveStations()
 {
     qDebug() << "Retrieving stations";
-    QString url = QString("http://")+"localhost"+":"+"5000"+"/GetStations";
+    QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
+            +":"+SettingsManager::getSetting("Server","port").toString()+"/GetStations";
     HttpRequestInput input(url,"GET");
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     connect(worker,&HttpRequestWorker::on_execution_finished,this,&Interact::handleRetrieveStationsResult);
@@ -108,7 +109,8 @@ void Interact::onUpdateChartSignal(QString type)
 
 void Interact::onLoginSignal(QString username, QString password)
 {
-    QString url = "http://"+QString("localhost")+":"+"5000"+"/LogIn";
+    QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"
+            +SettingsManager::getSetting("Server","port").toString()+"/LogIn";
     HttpRequestInput input(url,"POST");
     input.add_var("email",username);
     input.add_var("password",password);
@@ -120,7 +122,8 @@ void Interact::onLoginSignal(QString username, QString password)
 void Interact::onLogOutSignal()
 {
     timer->stop();
-    QString url = "http://"+QString("localhost")+":"+QString("5000")+"/LogOut";
+    QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"+
+            SettingsManager::getSetting("Server","port").toString()+"/LogOut";
     HttpRequestInput input(url,"GET");
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     connect(worker,SIGNAL(on_execution_finished(HttpRequestWorker*)),this,SLOT(handleLogOutResult(HttpRequestWorker*)));
@@ -182,7 +185,8 @@ void Interact::updateDailyJSON()
     if(currentStation.first == "")
         return;
     worker_->disconnect();
-    QString url = "http://"+QString("localhost")+":"+"5000"+"/GetDaily";
+    QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"+
+            SettingsManager::getSetting("Server","port").toString()+"/GetDaily";
     HttpRequestInput input(url,"GET");
     input.add_var("station",QString::number(currentStation.second));
     input.add_var("date1",Calendar::Last24Hour().first.toString("yyyy-MM-dd"));

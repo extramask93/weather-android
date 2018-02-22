@@ -5,13 +5,17 @@ import QtQuick.Layouts 1.1
 Item {
     Background {anchors.fill: parent}
     ColumnLayout {
-        anchors.fill: parent
-        Column {
+        width: rootID.width*0.8
+        height: parent.height
+        anchors.centerIn: parent
+        ColumnLayout {
             anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 4
             Label {
                 text: "IP:"
             }
             TextField {
+                Layout.fillWidth: true
                 id: ipFieldID
                 text: SettingsManager.getSetting("Server","ip")
                 focus: true
@@ -21,10 +25,13 @@ Item {
             }
             TextField {
                 id: portFieldID
+                Layout.fillWidth: true
                 text: SettingsManager.getSetting("Server","port")
             }
         }
         RowLayout {
+            Layout.fillWidth: true
+            spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
             Button {
                 text: "Save"

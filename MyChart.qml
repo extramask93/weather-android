@@ -9,25 +9,23 @@ Item {
     property alias sc: scseries
     property alias date: dateAxID
     property alias val: valueAxID
-    ColumnLayout {
-        width: parent.width
+    Background {
         anchors.fill: parent
-        Background {
-            anchors.fill: parent
-        }
-
-        ComboBox {
+    }
+    ComboBox {
             id: periodBox
             objectName: "periodBoxObject"
             anchors.bottom: chartID.top
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 2*tileWidth
+            width: parent.width*0.8
+            height: 100
+            opacity: 0.5
             model: ["Today", "3 days","Week", "Month","Year"]
             onActivated: Interact.onUpdateChartSignal("")
         }
     ChartView {
         id : chartID
-        height: parent.height/2
+        height: parent.height*0.6
         width: parent.width
         anchors.top: periodBox.bottom
         antialiasing: true
@@ -46,15 +44,5 @@ Item {
             axisX:dateAxID
             axisY: valueAxID
         }
-    }
-
-    MouseArea
-    {
-        anchors.top: chartID.bottom
-        height: parent.height/2
-        width: parent.width
-        onClicked: if(chartID.visible===true){
-                   mychartID.visible=false;}
-    }
     }
 }
