@@ -15,8 +15,9 @@
 #include <QAbstractAxis>
 #include <QtConcurrent/QtConcurrent>
 #include "calendar.h"
-Interact::Interact(QObject *parent, QQmlApplicationEngine &engine):QObject{parent},engine_{engine}, worker_{new HttpRequestWorker(nullptr)}
+Interact::Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell):QObject{parent},engine_{engine}, worker_{new HttpRequestWorker(nullptr)}
 {
+    model = modell;
     currentStation = std::make_pair("",0);
     Measurement *temperature = new Measurement(this,ReadingType::temperature);
     engine_.rootContext()->setContextProperty("Temperature",temperature);
@@ -80,12 +81,11 @@ void Interact::onUpdateChartSignal(QString type)
     QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("chartObject");
     QObject *pbox = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("periodBoxObject");
     int index = pbox->property("currentIndex").toInt();
-    chart->setProperty("title",type);
-    QAbstractSeries * series;
-    QMetaObject::invokeMethod(chart,"series",Qt::AutoConnection,Q_RETURN_ARG(QAbstractSeries*,series),Q_ARG(int,0));
-    QScatterSeries *ln = static_cast<QScatterSeries*>(series);
-    auto axes = ln->attachedAxes();
-         model = new MeasurementsModel{this,series};
+    //chart->setProperty("title",type);
+    //QAbstractSeries * series;
+    //QMetaObject::invokeMethod(chart,"series",Qt::AutoConnection,Q_RETURN_ARG(QAbstractSeries*,series),Q_ARG(int,0));
+    //QScatterSeries *ln = static_cast<QScatterSeries*>(series);
+    //auto axes = ln->attachedAxes();
     switch(index) {
     case 0:
         model->getTodayData(currentStation.second,type);

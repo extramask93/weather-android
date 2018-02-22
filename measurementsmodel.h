@@ -3,15 +3,21 @@
 
 #include <QObject>
 #include <QtCharts>
+#include <QStringList>
+#include <QList>
 #include "httprequestworker.h"
 #include "measurement.h"
+#include <QQmlApplicationEngine>
+#include "propertyhelper.h"
 #include "calendar.h"
 class QQuickView;
 class MeasurementsModel : public QObject
 {
     Q_OBJECT
+    AUTO_PROPERTY(QStringList, dates)
+    AUTO_PROPERTY(QList<double>, values)
 public:
-    explicit MeasurementsModel(QObject *parent, QAbstractSeries *series);
+    explicit MeasurementsModel(QObject *parent, QAbstractSeries *series, QQmlApplicationEngine &engine);
 protected:
     void getDataHelper(DateRange period);
     QVector<QPointF> data_;
@@ -19,6 +25,8 @@ protected:
     QAbstractSeries *series_;
     QString type_;
     int station_;
+    QString formatString_;
+    QQmlApplicationEngine &engine_;
 Q_SIGNALS:
 
 public slots:

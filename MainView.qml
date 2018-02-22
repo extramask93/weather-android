@@ -161,13 +161,5 @@ Item {
         }
     }
     function parseData(data) {
-        mychartID.sc.clear();
-        mychartID.val.max = 100;
-        mychartID.val.min = -20;
-        //mychartID.date.max = toMsecsSinceEpoch(new Date(2018, 2, 15));
-        mychartID.chart.update();
-        for(var i in data.measurements) {
-            console.log("soil:"+data.measurements[i].soil+", date:"+data.measurements[i].measurementDate);
         }
-    }
 }

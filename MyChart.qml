@@ -6,9 +6,6 @@ Item {
 
     property alias chart: chartID
     property alias periodBox: periodBox
-    property alias sc: scseries
-    property alias date: dateAxID
-    property alias val: valueAxID
     Background {
         anchors.fill: parent
     }
@@ -21,28 +18,60 @@ Item {
             height: 100
             opacity: 0.5
             model: ["Today", "3 days","Week", "Month","Year"]
-            onActivated: Interact.onUpdateChartSignal("")
+            onActivated: {Interact.onUpdateChartSignal("");
+            }
         }
-    ChartView {
-        id : chartID
+    Chart{
+        id: chartID
+        objectName: "chartObject"
         height: parent.height*0.6
         width: parent.width
         anchors.top: periodBox.bottom
-        antialiasing: true
-        legend.visible: false
-        objectName: "chartObject"
-        ValueAxis {
-            id: valueAxID
-        }
-        DateTimeAxis {
-            id: dateAxID
-            labelsAngle: 90
-            titleText: "date"
-        }
-        ScatterSeries {
-            id: scseries
-            axisX:dateAxID
-            axisY: valueAxID
-        }
-    }
+        property int test : 65;
+        onPaint: {
+            line({
+                      labels : Model.dates,
+                      datasets : [
+                          {
+                              fillColor : "rgba(220,220,220,0.9)",
+                              strokeColor : "rgba(220,220,220,1)",
+                              pointColor : "rgba(3,93,49,1)",
+                              pointStrokeColor : "#fff",
+                              data : Model.values
+                          }
+                      ]
+                  },{scaleGridLineColor : "rgba(0,0,0,.5)",
+                    scaleFontColor : "#000",scaleFontSize : 25,
+                     pointDotRadius : 15});
+        }}
+    //Timer{
+      //  id:t
+        //interval: 1
+        //repeat: true
+        //running: true
+        //onTriggered:{
+         //   chartID.requestPaint()
+        //}
 }
+//    ChartView {
+//        id : chartID
+//        height: parent.height*0.6
+//        width: parent.width
+//        anchors.top: periodBox.bottom
+//        antialiasing: true
+//        legend.visible: false
+//        objectName: "chartObject"
+//        ValueAxis {
+//            id: valueAxID
+//        }
+//        DateTimeAxis {
+//            id: dateAxID
+//            labelsAngle: 90
+//            titleText: "date"
+//        }
+//        ScatterSeries {
+//            id: scseries
+//            axisX:dateAxID
+//            axisY: valueAxID
+//        }
+//    }

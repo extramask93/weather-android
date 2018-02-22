@@ -4,17 +4,22 @@
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 #include <QDateTime>
+#include "settingsmanager.h"
 QT_CHARTS_USE_NAMESPACE
 Q_DECLARE_METATYPE(QAbstractSeries *)
 Q_DECLARE_METATYPE(QAbstractAxis *)
 
-MeasurementsModel::MeasurementsModel(QObject *parent,QAbstractSeries *series) : QObject(parent), series_{series}
+MeasurementsModel::MeasurementsModel(QObject *parent,QAbstractSeries *series, QQmlApplicationEngine &engine) : QObject(parent), engine_{engine},
+    series_{series}
 {
+    dates(QStringList{"28-03-18","23"});
+    values(QList<double>{22,33});
     qRegisterMetaType<QAbstractSeries *>();
     qRegisterMetaType<QAbstractAxis *>();
 }
 void MeasurementsModel::getDataHelper(DateRange period) {
-    QString url = "http://localhost:5000/GetDaily";
+    QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"
+            +SettingsManager::getSetting("Server","port").toString()+"/GetDaily";
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input(url,"GET");
     input.add_var("date1",period.first.toString("yyyy-MM-dd"));
@@ -22,11 +27,11 @@ void MeasurementsModel::getDataHelper(DateRange period) {
     input.add_var("station",QString::number(station_));
     connect(worker,SIGNAL(on_execution_finished(HttpRequestWorker*)),this, SLOT(handleTodayData(HttpRequestWorker*)));
     worker->execute(&input);
-    QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
-    auto axes = lineseries->attachedAxes();
-    axes.at(1)->setTitleText(type_ + '['+Measurement::readingUnit(Measurement::StringToReading(type_))+']');
-    QDateTimeAxis *dt = static_cast<QDateTimeAxis*>(axes.at(0));
-    dt->setFormat("yy-MM-dd");
+    //QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
+    //auto axes = lineseries->attachedAxes();
+    //axes.at(1)->setTitleText(type_ + '['+Measurement::readingUnit(Measurement::StringToReading(type_))+']');
+    //QDateTimeAxis *dt = static_cast<QDateTimeAxis*>(axes.at(0));
+    //dt->setFormat("yy-MM-dd");
 }
 void MeasurementsModel::getTodayData(int station, QString readingtype)
 {
@@ -34,6 +39,7 @@ void MeasurementsModel::getTodayData(int station, QString readingtype)
     station_=station;
     auto period = Calendar::Last24Hour();
     getDataHelper(period);
+    formatString_ = "hh:mm";
 
 }
 
@@ -43,6 +49,7 @@ void MeasurementsModel::getLast3DaysData(int station, QString readingtype)
     station_=station;
     auto period = Calendar::Last3Days();
     getDataHelper(period);
+    formatString_ = "dd-MM";
 }
 
 void MeasurementsModel::getWeeklyData(int station, QString readingtype)
@@ -51,6 +58,7 @@ void MeasurementsModel::getWeeklyData(int station, QString readingtype)
     station_=station;
     auto period = Calendar::LastWeek();
     getDataHelper(period);
+    formatString_ = "dd-MM";
 }
 
 void MeasurementsModel::getMonthlyData(int station, QString readingtype)
@@ -59,6 +67,7 @@ void MeasurementsModel::getMonthlyData(int station, QString readingtype)
     station_=station;
     auto period = Calendar::LastMonth();
     getDataHelper(period);
+    formatString_ = "dd-MM";
 }
 
 void MeasurementsModel::getYearlyData(int station, QString readingtype)
@@ -67,6 +76,7 @@ void MeasurementsModel::getYearlyData(int station, QString readingtype)
     station_=station;
     auto period = Calendar::LastYear();
     getDataHelper(period);
+    formatString_ = "dd-MM-yy";
 }
 
 void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
@@ -78,30 +88,42 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
         QJsonObject jsonObject = document.object();
         QJsonArray jsonArray = jsonObject["measurements"].toArray();
         data_.clear();
+        a_dates.clear();
+        a_values.clear();
+        QStringList tempd;
+        QList<double> tempv;
         foreach (const QJsonValue & v, jsonArray) {
              auto date = v.toObject().value("measurementDate").toString();
              auto value = v.toObject().value(type_).toString();
+             tempd.append(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss").toString(formatString_));
+             tempv.append(value.toDouble());
              data_.append(QPointF(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss").toMSecsSinceEpoch(),value.toDouble()));
              qDebug() << date<<value;
         }
+        dates(tempd);
+        values(tempv);
         /*find smallest and biggest date*/
         auto comp = [](const QPointF &a, const QPointF &b) {return a.x() < b.x();};
         auto min = std::min_element(data_.begin(),data_.end(),comp);
         auto max = std::max_element(data_.begin(),data_.end(),comp);
-        QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
-        auto axes = lineseries->attachedAxes();
-            axes.at(0)->setMin(QDateTime::fromMSecsSinceEpoch(min->x()).addDays(-1));
-            axes.at(0)->setMax(QDateTime::fromMSecsSinceEpoch(max->x()).addDays(1));
+
+        //QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
+        //auto axes = lineseries->attachedAxes();
+          //  axes.at(0)->setMin(QDateTime::fromMSecsSinceEpoch(min->x()).addDays(-1));
+            //axes.at(0)->setMax(QDateTime::fromMSecsSinceEpoch(max->x()).addDays(1));
         /*find smallest and biggest measurement*/
         auto compy = [](const QPointF &a, const QPointF &b) {return a.y() < b.y();};
         auto miny = std::min_element(data_.begin(),data_.end(),compy);
         auto maxy = std::max_element(data_.begin(),data_.end(),compy);
-        if(miny->y()<0)
-            axes.at(1)->setMin(miny->y()-20);
-        else
-            axes.at(1)->setMin(0);
-        axes.at(1)->setMax(maxy->y()+20);
-        lineseries->replace(data_);
+        QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("chartObject");
+        QMetaObject::invokeMethod(chart,"requestPaint");
+//        if(miny->y()<0)
+//            axes.at(1)->setMin(miny->y()-20);
+//        else
+//            axes.at(1)->setMin(0);
+//        axes.at(1)->setMax(maxy->y()+20);
+//        lineseries->replace(data_);
+
 
     }
 }

@@ -20,7 +20,9 @@ int main(int argc, char *argv[])
     root_context->setContextProperty("SettingsManager",&settingsManager);
     LoginHandler login{&settingsManager};
     root_context->setContextProperty("LoginHandler",&login);
-    Interact interact{0,engine};
+    MeasurementsModel model{nullptr,nullptr,engine};
+    root_context->setContextProperty("Model",&model);
+    Interact interact{0,engine,&model};
     root_context->setContextProperty("Interact",&interact);
     /*-----------------------------*/
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

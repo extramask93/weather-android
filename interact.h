@@ -18,7 +18,7 @@ class Interact : public QObject
     Q_OBJECT
     AUTO_PROPERTY(QStringList, stations)
 public:
-    explicit Interact(QObject *parent,QQmlApplicationEngine &engine);
+    explicit Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell);
     void Run();
 public slots:
     void onMainViewLoaded();

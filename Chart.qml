@@ -323,7 +323,7 @@ Canvas{
                 scaleLineWidth : 1,
                 scaleShowLabels : true,
                 scaleLabel : "<%=value%>",
-                scaleFontFamily : "'Arial'",
+                scaleFontFamily : "sans-serif",
                 scaleFontSize : 12,
                 scaleFontStyle : "normal",
                 scaleFontColor : "#666",
@@ -359,8 +359,8 @@ Canvas{
                 scaleShowLabels : true,
                 scaleLabel : "<%=value%>",
                 scaleFontFamily : "'Arial'",
-                scaleFontSize : 12,
-                scaleFontStyle : "normal",
+                scaleFontSize : 20,
+                scaleFontStyle : "bold",
                 scaleFontColor : "#666",
                 scaleShowGridLines : true,
                 scaleGridLineColor : "rgba(0,0,0,.05)",
@@ -922,7 +922,7 @@ Canvas{
                     if (rotateLabels > 0){
                         ctx.translate(yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize);
                         ctx.rotate(-(rotateLabels * (Math.PI/180)));
-                        ctx.fillText(data.labels[i], 0,0);
+                        ctx.fillText(data.labels[i]+"as", 0,0);
                         ctx.restore();
                     }
 
@@ -952,7 +952,7 @@ Canvas{
                 ctx.moveTo(yAxisPosX,xAxisPosY+5);
                 ctx.lineTo(yAxisPosX,5);
                 ctx.stroke();
-
+                ctx.stroke();
                 ctx.textAlign = "right";
                 ctx.textBaseline = "middle";
                 for (var j=0; j<calculatedScale.steps; j++){
@@ -973,6 +973,7 @@ Canvas{
                         ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
                     }
                 }
+                ctx.fillText("dupa",yAxisPosX-8,xAxisPosY );
 
 
             }
