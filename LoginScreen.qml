@@ -14,55 +14,65 @@ Item {
     }
     objectName: "loginObject"
     signal loginSignal(string email, string password);
-    Rectangle {
-        anchors.fill: parent
-        Background {}
+
+    Background {anchors.fill: parent}
     ColumnLayout {
-        width: rootID.width*0.8
-        height: parent.height
+        width: parent.width
         anchors.centerIn: parent
-        ColumnLayout { /* username */
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 4
-            Label { text: "Username"; color: "black"}
+        spacing: 15
+        anchors.horizontalCenter: parent.horizontalCenter
+            Label {
+                text: "Username";
+                color: "black";
+                Layout.alignment: Qt.AlignHCenter
+            }
             TextField {
                 id: userNameID
-                Layout.fillWidth: true
+                Layout.preferredWidth: parent.width-20
+                Layout.alignment: Qt.AlignHCenter
                 objectName: "userTextField"
                 focus: true
                 text: LoginHandler.login
                 placeholderText: "user"
             }
-            Label { text:"Password"; color: "black" }
+            Label {
+                Layout.alignment: Qt.AlignHCenter
+                text:"Password";
+                color: "black";
+            }
             TextField {
                 id: passwordID
-                Layout.fillWidth: true
+                Layout.preferredWidth: parent.width - 20
+                Layout.alignment: Qt.AlignHCenter
                 objectName: "passwordTextField"
                 text: LoginHandler.password
                 echoMode: TextInput.Password
                 placeholderText: "password"
             }
             Label {
+                Layout.alignment: Qt.AlignHCenter
                 id: infoLabelID
                 text: ""
                 color: "red"
             }
             CheckBox {
-                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignLeft
+                height: passwordID.height
+                Layout.preferredWidth: userNameID.width/4
                 id : rememberCheckBox
                 checked: LoginHandler.rememberMe
                 objectName: "rememberCheckBox"
                 text: "Remember me"
             }
-        }
         RowLayout {
             Layout.fillWidth: true
-            height: 100
             spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
             Button {
                 text: "Login"
-                width: parent.width*0.3
+                height: ipFieldID.height
+                Layout.preferredWidth: userNameID.width/4
+                Layout.alignment: Qt.AlignRight
                 onClicked: {
                     infoLabelID.text = ""
                     LoginHandler.login = userNameID.text
@@ -72,10 +82,12 @@ Item {
                 }
             }
             Button {
+                height: ipFieldID.height
+                Layout.preferredWidth: userNameID.width/4
+                Layout.alignment: Qt.AlignRight
                 text: "Settings"
                 onClicked: loaderID.source = "Settings.qml"
             }
         }
-    }
     }
 }

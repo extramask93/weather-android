@@ -78,14 +78,8 @@ void Interact::onUpdateChartSignal(QString type)
     if(type=="")
         type=lasttype;
     lasttype=type;
-    QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("chartObject");
     QObject *pbox = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("periodBoxObject");
     int index = pbox->property("currentIndex").toInt();
-    //chart->setProperty("title",type);
-    //QAbstractSeries * series;
-    //QMetaObject::invokeMethod(chart,"series",Qt::AutoConnection,Q_RETURN_ARG(QAbstractSeries*,series),Q_ARG(int,0));
-    //QScatterSeries *ln = static_cast<QScatterSeries*>(series);
-    //auto axes = ln->attachedAxes();
     switch(index) {
     case 0:
         model->getTodayData(currentStation.second,type);
