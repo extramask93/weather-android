@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.1
 import "./config.js" as Config
 Item {
     property variant allConfig: Config.config()
+    property variant currentConfig: allConfig[0]
     property alias chart: chartID
     property alias periodBox: periodBox
     Background {
@@ -13,24 +14,38 @@ Item {
     ComboBox {
             id: periodBox
             objectName: "periodBoxObject"
-            anchors.bottom: chartID.top
+            //anchors.bottom: chartID.top
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width*0.8
             height: 100
             opacity: 0.5
             model: ["Today", "3 days","Week", "Month","Year"]
-            onActivated: {Interact.onUpdateChartSignal("");
-            }
-        }
-    Qchart2 {
+            onActivated: {
+                Interact.onUpdateChartSignal("");
+
+
+            }// {
+    }
+    Loader {
+        source: "qrc:/Qchart2.qml"
         id:chartID
+        visible: true
         height: parent.height-periodBox.height
         width: parent.width
         anchors.top: periodBox.bottom
-        chartOptions : allConfig[0].options
-        chartType : allConfig[0].type
-        chartData: allConfig[0].data
-     }
+        onLoaded: {
+            chartID.item.chartData = currentConfig.data
+            chartID.item.chartOptions = currentConfig.options
+            chartID.item.chartType = currentConfig.type
+            chartID.item.requestPaint()
+        }
+    }
+    function updater() {
+        currentConfig = Config.config2()[0]
+        chartID.item._chart.destroy()
+        chartID.source = ""
+        chartID.source = "qrc:/Qchart2.qml"
+    }
 }
 //    Chart{
 //        id: chartID
@@ -55,14 +70,7 @@ Item {
 //                     scaleFontColor : "#000",scaleFontSize : 25,
 //                     pointDotRadius : 15});
 //        }}
-    //Timer{
-      //  id:t
-        //interval: 1
-        //repeat: true
-        //running: true
-        //onTriggered:{
-         //   chartID.requestPaint()
-        //}
+
 //    ChartView {
 //        id : chartID
 //        height: parent.height*0.6

@@ -973,7 +973,6 @@ Canvas{
                         ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
                     }
                 }
-                ctx.fillText("dupa",yAxisPosX-8,xAxisPosY );
 
 
             }

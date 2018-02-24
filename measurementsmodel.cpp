@@ -12,8 +12,8 @@ Q_DECLARE_METATYPE(QAbstractAxis *)
 MeasurementsModel::MeasurementsModel(QObject *parent,QAbstractSeries *series, QQmlApplicationEngine &engine) : QObject(parent), engine_{engine},
     series_{series}
 {
-    dates(QStringList{"28-03-18","23"});
-    values(QList<double>{22,33});
+    dates(QStringList{});
+    values(QList<qreal>{});
     qRegisterMetaType<QAbstractSeries *>();
     qRegisterMetaType<QAbstractAxis *>();
 }
@@ -91,12 +91,12 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
         a_dates.clear();
         a_values.clear();
         QStringList tempd;
-        QList<double> tempv;
+        QList<qreal> tempv;
         foreach (const QJsonValue & v, jsonArray) {
              auto date = v.toObject().value("measurementDate").toString();
              auto value = v.toObject().value(type_).toString();
              tempd.append(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss").toString(formatString_));
-             tempv.append(value.toDouble());
+             tempv.append(value.toFloat());
              data_.append(QPointF(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss").toMSecsSinceEpoch(),value.toDouble()));
              qDebug() << date<<value;
         }
@@ -115,8 +115,8 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
         auto compy = [](const QPointF &a, const QPointF &b) {return a.y() < b.y();};
         auto miny = std::min_element(data_.begin(),data_.end(),compy);
         auto maxy = std::max_element(data_.begin(),data_.end(),compy);
-        QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("chartObject");
-        QMetaObject::invokeMethod(chart,"requestPaint");
+        QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject");
+        QMetaObject::invokeMethod(chart,"updater");
 //        if(miny->y()<0)
 //            axes.at(1)->setMin(miny->y()-20);
 //        else
