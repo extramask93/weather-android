@@ -16,6 +16,8 @@ class MeasurementsModel : public QObject
     Q_OBJECT
     AUTO_PROPERTY(QStringList, dates)
     AUTO_PROPERTY(QList<qreal>, values)
+    AUTO_PROPERTY(QString, unit)
+    AUTO_PROPERTY(QString, cType)
 public:
     explicit MeasurementsModel(QObject *parent, QAbstractSeries *series, QQmlApplicationEngine &engine);
 protected:

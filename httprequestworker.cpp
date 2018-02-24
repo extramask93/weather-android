@@ -4,7 +4,7 @@
 #include <QFileInfo>
 #include <QBuffer>
 
-
+QNetworkCookieJar* HttpRequestWorker::cookies = new QNetworkCookieJar{};
 HttpRequestInput::HttpRequestInput() {
     initialize();
 }
@@ -240,7 +240,8 @@ void HttpRequestWorker::execute(HttpRequestInput *input) {
     // prepare connection
 
     QNetworkRequest request = QNetworkRequest(QUrl(input->url_str));
-    request.setRawHeader("User-Agent", "Agent name goes here");
+    //request.set
+    manager->setCookieJar(cookies);
 
     if (input->var_layout == URL_ENCODED) {
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");

@@ -46,6 +46,7 @@ class HttpRequestWorker : public QObject {
     Q_OBJECT
 
 public:
+    static QNetworkCookieJar *cookies;
     QByteArray response;
     QNetworkReply::NetworkError error_type;
     QString error_str;
@@ -62,7 +63,6 @@ public slots:
 private:
     QNetworkAccessManager *manager;
     HttpRequestInput *input_;
-    QList<QNetworkCookie> cookies;
 private slots:
     void on_manager_finished(QNetworkReply *reply);
 

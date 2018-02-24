@@ -13,13 +13,9 @@ Item {
             width: parent.width
             height: parent.height
             anchors.top: parent.top
-            Label {
-                text: "Options"
-                anchors.centerIn: parent
-            }
             Column {
                 anchors.centerIn: parent
-                spacing: 4
+                spacing: 16
                 Button {
                     text: "Help"
                 }

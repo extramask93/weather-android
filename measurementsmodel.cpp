@@ -102,6 +102,10 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
         }
         dates(tempd);
         values(tempv);
+        unit(Measurement::readingUnit(Measurement::StringToReading(type_)));
+        auto tmp = type_;
+        tmp[0] = tmp[0].toUpper();
+        cType(tmp);
         /*find smallest and biggest date*/
         auto comp = [](const QPointF &a, const QPointF &b) {return a.x() < b.x();};
         auto min = std::min_element(data_.begin(),data_.end(),comp);

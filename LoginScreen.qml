@@ -56,13 +56,15 @@ Item {
                 color: "red"
             }
             CheckBox {
-                Layout.alignment: Qt.AlignLeft
-                height: passwordID.height
-                Layout.preferredWidth: userNameID.width/4
+                //Layout.alignment: Qt.AlignLeft
+                //Layout.preferredHeight:userNameID.height
+                //Layout.preferredWidth: userNameID.width/2
                 id : rememberCheckBox
                 checked: LoginHandler.rememberMe
                 objectName: "rememberCheckBox"
                 text: "Remember me"
+                indicator.width: userNameID.height
+                indicator.height: userNameID.height
             }
         RowLayout {
             Layout.fillWidth: true

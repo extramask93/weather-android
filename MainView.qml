@@ -131,11 +131,10 @@ Item {
         imHeight: tileHeight
         imSource: "/Images/water-drop.png"
         x: 0
-        y: (6*tileHeight)
+        y: (5*tileHeight)
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
-                //Interact.onUpdateChartSignal("soil");
-                getData();
+                Interact.onUpdateChartSignal("soil");
         }
         label: Soil.currentValue>-200?Soil.currentValue+" "+Soil.unit:"No data"
     }
@@ -148,6 +147,12 @@ Item {
             Qt.quit()
         }
     }
+    Keys.onEscapePressed: {
+        if(mychartID.visible===true){
+            mychartID.visible=false;
+            event.accepted = true;}
+    }
+
     function getData() {
         var xhr = new XMLHttpRequest;
         console.log("getdata")
