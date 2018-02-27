@@ -7,6 +7,8 @@
 #include "measurementsmodel.h"
 #include "propertyhelper.h"
 #include "settingsmanager.h"
+#include "loginhandler.h"
+#include <memory>
 
 class QQmlApplicationEngine;
 class HttpRequestWorker;
@@ -18,16 +20,11 @@ class Interact : public QObject
     Q_OBJECT
     AUTO_PROPERTY(QStringList, stations)
 public:
-    explicit Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell);
-    void Run();
+    explicit Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell, LoginHandler *login);
 public slots:
     void onMainViewLoaded();
     void RetrieveStations();
-    void onUpdateChartSignal(QString type);
-    void onLoginSignal(QString username, QString password);
-    void onLogOutSignal();
-    void handleResult(HttpRequestWorker *);
-    void handleLogOutResult(HttpRequestWorker *);
+    void onUpdateChartSignal(QString type, qint64 index);
     void handleRetrieveStationsResult(HttpRequestWorker *);
     void updateMeasurements(HttpRequestWorker *);
     void updateDailyJSON();
@@ -41,7 +38,8 @@ private:
     std::pair<QString, int> currentStation;
     QList<std::pair<QString,int>> stationsAndIndexes;
     MeasurementsModel *model;
-    QTimer *timer;
+    LoginHandler *login_;
+    std::unique_ptr<QTimer> timer;
 };
 
 #endif // INTERACT_H

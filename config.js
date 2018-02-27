@@ -82,7 +82,8 @@ function config2() {
                     fontColor: "#000",
                     labelString: 'date'
                   },
-                  ticks: {fontSize:50,fontColor: "#000",},
+                  ticks: {fontSize:50,fontColor: "#000",autoSkip: true,
+                            maxTicksLimit: 4},
 
                 }]
              },

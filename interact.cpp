@@ -15,7 +15,8 @@
 #include <QAbstractAxis>
 #include <QtConcurrent/QtConcurrent>
 #include "calendar.h"
-Interact::Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell):QObject{parent},engine_{engine}, worker_{new HttpRequestWorker(nullptr)}
+Interact::Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell, LoginHandler *login):
+    QObject{parent},engine_{engine}, worker_{new HttpRequestWorker(nullptr)}, login_{login}
 {
     model = modell;
     currentStation = std::make_pair("",0);
@@ -37,33 +38,20 @@ Interact::Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsM
     measurementList_.append(co2);
     measurementList_.append(soil);
     measurementList_.append(battery);
-    timer = new QTimer{this};
-
-}
-
-void Interact::Run()
-{
-    rootObject_ = engine_.rootObjects()[0];
-    QObject* home = engine_.rootObjects().first()->findChild<QObject*>("loginObject");
-    QObject *logout = engine_.rootObjects().first()->findChild<QObject*>("sidePanelObject");
-    if(home !=nullptr)
-    connect(home, SIGNAL(loginSignal(QString, QString)), this, SLOT(onLoginSignal(QString,QString)));
-    connect(logout, SIGNAL(logOutSignal()),this,SLOT(onLogOutSignal()));
+    timer = std::make_unique<QTimer>(this);
 
 }
 
 void Interact::onMainViewLoaded()
 {
-    QObject *mainView = engine_.rootObjects().first()->findChild<QObject*>("mainViewObject");
-    connect(mainView,SIGNAL(loaded()),this,SLOT(RetrieveStations()));
-    connect(timer,&QTimer::timeout,this,&Interact::updateDailyJSON);
+    RetrieveStations();
+    connect(timer.get(),&QTimer::timeout,this,&Interact::updateDailyJSON);
     RetrieveStations();
     timer->start(3600);
 }
 
 void Interact::RetrieveStations()
 {
-    qDebug() << "Retrieving stations";
     QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
             +":"+SettingsManager::getSetting("Server","port").toString()+"/GetStations";
     HttpRequestInput input(url,"GET");
@@ -72,14 +60,12 @@ void Interact::RetrieveStations()
     worker->execute(&input);
 }
 
-void Interact::onUpdateChartSignal(QString type)
+void Interact::onUpdateChartSignal(QString type, qint64 index)
 {
     static QString lasttype;
     if(type=="")
         type=lasttype;
     lasttype=type;
-    QObject *pbox = engine_.rootObjects().first()->findChild<QObject*>("mychartObject")->findChild<QObject*>("periodBoxObject");
-    int index = pbox->property("currentIndex").toInt();
     switch(index) {
     case 0:
         model->getTodayData(currentStation.second,type);
@@ -101,54 +87,8 @@ void Interact::onUpdateChartSignal(QString type)
     }
 }
 
-void Interact::onLoginSignal(QString username, QString password)
-{
-    QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"
-            +SettingsManager::getSetting("Server","port").toString()+"/LogIn";
-    HttpRequestInput input(url,"POST");
-    input.add_var("email",username);
-    input.add_var("password",password);
-    HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker,SIGNAL(on_execution_finished(HttpRequestWorker*)),this,SLOT(handleResult(HttpRequestWorker*)));
-    worker->execute(&input);
-}
-
-void Interact::onLogOutSignal()
-{
-    timer->stop();
-    QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"+
-            SettingsManager::getSetting("Server","port").toString()+"/LogOut";
-    HttpRequestInput input(url,"GET");
-    HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker,SIGNAL(on_execution_finished(HttpRequestWorker*)),this,SLOT(handleLogOutResult(HttpRequestWorker*)));
-    worker->execute(&input);
-}
-
-void Interact::handleResult(HttpRequestWorker *worker)
-{
-    QString response;
-    QObject *loader = engine_.rootObjects().first()->findChild<QObject*>("loaderObject");
-    qDebug()<<loader->objectName();
-    if(worker->error_type == QNetworkReply::NoError) {
-        response = "Success, response: "+worker->response;
-        loader->setProperty("source","qrc:/MainView.qml");
-        RetrieveStations();
-    }
-    else {
-        response = "Error: " + worker->error_str+'\n'+worker->response;
-    }
-    qDebug() << response;
-}
-
-void Interact::handleLogOutResult(HttpRequestWorker *worker)
-{
-    QObject *loader = engine_.rootObjects().first()->findChild<QObject*>("loaderObject");
-    loader->setProperty("source","qrc:/LoginScreen.qml");
-}
-
 void Interact::handleRetrieveStationsResult(HttpRequestWorker *worker)
 {
-    qDebug()<<"There is response";
     if(worker->error_type == QNetworkReply::NoError) {
         QJsonParseError error;
         QJsonDocument document = QJsonDocument::fromJson(worker->response,&error);
@@ -169,8 +109,7 @@ void Interact::handleRetrieveStationsResult(HttpRequestWorker *worker)
         onStationChanged(0);
     }
     else {
-        qDebug()<<worker->response;
-        qDebug()<<"error in stations";
+        login_->LogOut();
     }
 }
 
@@ -198,7 +137,6 @@ void Interact::onStationChanged(int index)
     if(it!= stationsAndIndexes.end()){
         currentStation = *it;
     }
-    qDebug()<<"current text"<<currentStation.first<<currentStation.second;
     updateDailyJSON();
 }
 void Interact::updateMeasurements(HttpRequestWorker *worker) {

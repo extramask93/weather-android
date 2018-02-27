@@ -44,10 +44,10 @@ void LoginHandler::LogOut()
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     connect(worker,SIGNAL(on_execution_finished(HttpRequestWorker*)),this,SLOT(HandleLogOutResult(HttpRequestWorker*)));
     worker->execute(&input);
+    emit loggedOut();
 }
 void LoginHandler::HandleLogOutResult(HttpRequestWorker *worker) {
     worker->deleteLater();
-    emit loggedOut();
 }
 
 void LoginHandler::loadCredentialsFromFile()

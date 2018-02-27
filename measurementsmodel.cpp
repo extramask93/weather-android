@@ -98,10 +98,10 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
              tempd.append(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss").toString(formatString_));
              tempv.append(value.toFloat());
              data_.append(QPointF(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss").toMSecsSinceEpoch(),value.toDouble()));
-             qDebug() << date<<value;
         }
-        dates(tempd);
-        values(tempv);
+            dates(tempd);
+            values(tempv);
+
         unit(Measurement::readingUnit(Measurement::StringToReading(type_)));
         auto tmp = type_;
         tmp[0] = tmp[0].toUpper();

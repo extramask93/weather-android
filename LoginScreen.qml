@@ -72,7 +72,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             Button {
                 text: "Login"
-                height: ipFieldID.height
+                height: userNameID.height
                 Layout.preferredWidth: userNameID.width/4
                 Layout.alignment: Qt.AlignRight
                 onClicked: {
@@ -84,7 +84,7 @@ Item {
                 }
             }
             Button {
-                height: ipFieldID.height
+                height: userNameID.height
                 Layout.preferredWidth: userNameID.width/4
                 Layout.alignment: Qt.AlignRight
                 text: "Settings"

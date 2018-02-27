@@ -7,6 +7,7 @@
 #include "propertyhelper.h"
 #include "httprequestworker.h"
 #include "settingsmanager.h"
+
 class QString;
 
 class LoginHandler : public QObject

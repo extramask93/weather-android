@@ -37,7 +37,7 @@ Item {
         y: (tileHeight)
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
-                Interact.onUpdateChartSignal("co2")
+                Interact.onUpdateChartSignal("co2", mychartID.periodBox.currentIndex)
 
         }
         label: Co2.currentValue>-200?Co2.currentValue+" "+Co2.unit:"No data"
@@ -53,7 +53,7 @@ Item {
         y: 0
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
-                Interact.onUpdateChartSignal("lux")
+                Interact.onUpdateChartSignal("lux",mychartID.periodBox.currentIndex)
         }
         label: Lux.currentValue>-200?Lux.currentValue+" "+Lux.unit:"No data"
         label2.anchors.centerIn: img
@@ -84,7 +84,7 @@ Item {
         y: tileHeight
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
-                Interact.onUpdateChartSignal("battery")
+                Interact.onUpdateChartSignal("battery",mychartID.periodBox.currentIndex)
         }
         label: Battery.currentValue>-200?Battery.currentValue+" "+Battery.unit:"No data"
         label2.anchors.centerIn: img
@@ -103,7 +103,7 @@ Item {
         y: (2*tileHeight)
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
-                Interact.onUpdateChartSignal("humidity")
+                Interact.onUpdateChartSignal("humidity",mychartID.periodBox.currentIndex)
         }
         label: Humidity.currentValue>-200?Humidity.currentValue+" "+Humidity.unit:"No data"
 
@@ -119,7 +119,7 @@ Item {
         y: (3*tileHeight)
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
-                Interact.onUpdateChartSignal("temperature")
+                Interact.onUpdateChartSignal("temperature",mychartID.periodBox.currentIndex)
         }
         label: Temperature.currentValue>-200?Temperature.currentValue+" "+Temperature.unit:"No data"
     }
@@ -134,7 +134,7 @@ Item {
         y: (5*tileHeight)
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
-                Interact.onUpdateChartSignal("soil");
+                Interact.onUpdateChartSignal("soil",mychartID.periodBox.currentIndex);
         }
         label: Soil.currentValue>-200?Soil.currentValue+" "+Soil.unit:"No data"
     }

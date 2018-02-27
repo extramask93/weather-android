@@ -21,8 +21,7 @@ Item {
             opacity: 0.5
             model: ["Today", "3 days","Week", "Month","Year"]
             onActivated: {
-                Interact.onUpdateChartSignal("");
-
+                Interact.onUpdateChartSignal("",currentIndex);
 
             }// {
     }

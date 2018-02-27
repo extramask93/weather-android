@@ -5,7 +5,6 @@ CONFIG += c++14 no-openssl
 
 SOURCES += main.cpp \
     loginhandler.cpp \
-    settings.cpp \
     httprequestworker.cpp \
     interact.cpp \
     measurementsmodel.cpp \
@@ -45,7 +44,6 @@ DISTFILES +=
 HEADERS += \
     loginhandler.h \
     propertyhelper.h \
-    settings.h \
     httprequestworker.h \
     interact.h \
     measurementsmodel.h \
