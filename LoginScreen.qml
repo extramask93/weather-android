@@ -91,5 +91,16 @@ Item {
                 onClicked: loaderID.source = "Settings.qml"
             }
         }
+        Text {
+            id: name
+            text: '<html><style type="text/css"></style><a href="http://google.com">Register</a></html>'
+            linkColor: "black"
+            Layout.alignment: Qt.AlignHCenter
+            font.pointSize: 14
+            Layout.margins: 10
+            onLinkActivated: {
+                loaderID.source = "RegisterPage.qml"
+            }
+        }
     }
 }

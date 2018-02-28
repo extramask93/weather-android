@@ -26,5 +26,7 @@
         <file>Images/ground.jpg</file>
         <file>Chart.qml</file>
         <file>config.js</file>
+        <file>RegisterPage.qml</file>
+        <file>StationSettingsPage.qml</file>
     </qresource>
 </RCC>

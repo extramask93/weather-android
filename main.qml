@@ -16,8 +16,8 @@ Window {
 
     id: rootID
     visible: true
-    width: Screen.width
-    height: Screen.height
+    width: 400//Screen.width
+    height: 600//Screen.height
     title: qsTr("EnvController")
     property int nrOfHorizontalTiles: 4
     property string appTitle: "EnvController"

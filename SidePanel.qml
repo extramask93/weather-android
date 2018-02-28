@@ -17,6 +17,13 @@ Item {
                 anchors.centerIn: parent
                 spacing: 16
                 Button {
+                    text: "Station Settings"
+                    enabled: true
+                    onClicked: {
+                        loaderID.source = "StationSettingsPage.qml"
+                    }
+                }
+                Button {
                     text: "Help"
                 }
                 Button {
@@ -24,6 +31,7 @@ Item {
                 }
                 Button {
                     text: "Logout"
+                    enabled: false
                     onClicked:{ logOutSignal();
                     }
                 }
