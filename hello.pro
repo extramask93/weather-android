@@ -10,7 +10,10 @@ SOURCES += main.cpp \
     measurementsmodel.cpp \
     measurement.cpp \
     calendar.cpp \
-    settingsmanager.cpp
+    settingsmanager.cpp \
+    registermodel.cpp \
+    station.cpp \
+    sensor.cpp
 
 RESOURCES += qml.qrc \
     envmresources.qrc \
@@ -50,4 +53,7 @@ HEADERS += \
     measurementsmodel.h \
     measurement.h \
     calendar.h \
-    settingsmanager.h
+    settingsmanager.h \
+    registermodel.h \
+    station.h \
+    sensor.h

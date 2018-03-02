@@ -45,7 +45,6 @@ Item {
             anchors.centerIn: parent
             spacing: 15
             anchors.horizontalCenter: parent.horizontalCenter
-
                 ComboBox {
                     Layout.alignment: Qt.AlignRight
                     Layout.preferredWidth: parent.width*0.8
