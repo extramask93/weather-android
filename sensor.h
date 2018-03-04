@@ -7,6 +7,7 @@
 class Station;
 class Sensor : public QObject
 {
+    Q_OBJECT
     AUTO_PROPERTY(double,currentVal)
     AUTO_PROPERTY(bool,currentValExists)
     AUTO_PROPERTY(QString, name)
@@ -14,17 +15,15 @@ class Sensor : public QObject
     AUTO_PROPERTY(bool, enabled)
     AUTO_PROPERTY(QStringList, readingsDates)
     AUTO_PROPERTY(QList<double>, readings)
-    Q_OBJECT
 public:
-    explicit Sensor(QString name="", QObject *parent = nullptr);
-    Sensor(const Sensor& a) {a_currentVal= a.a_currentVal;}
+    explicit Sensor(QString name="dupa", QObject *parent = nullptr);
+    Sensor(const Sensor& a):QObject(a.parent()) {a_currentVal= a.a_currentVal; a_name = a.a_name;a_enabled=a.a_enabled;}
     bool operator ==(const Sensor&a) {return this->a_name == a.a_name;}
-    Sensor& operator =(const Sensor& other) { this->name(other.name()); return *this;}
+    Sensor& operator =(const Sensor& other) { this->name(other.name()); this->enabled(other.enabled()); return *this;}
 signals:
 
 public slots:
 private:
-    Station *owningStation_;
 };
-
+Q_DECLARE_METATYPE(Sensor)
 #endif // SENSOR_H

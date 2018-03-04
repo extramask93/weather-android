@@ -19,7 +19,8 @@ Interact::Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsM
     QObject{parent},engine_{engine}, worker_{new HttpRequestWorker(nullptr)}, login_{login}
 {
     model = modell;
-    currentStation = std::make_pair("",0);
+    currentStation = Station(0,"");
+    current(new Station(22,"fuck"));
     Measurement *temperature = new Measurement(this,ReadingType::temperature);
     engine_.rootContext()->setContextProperty("Temperature",temperature);
     Measurement *humidity = new Measurement(this,ReadingType::humidity);
@@ -50,6 +51,11 @@ void Interact::onMainViewLoaded()
     timer->start(3600);
 }
 
+void Interact::onSettingsLoaded()
+{
+    RetrieveStations();
+}
+
 void Interact::RetrieveStations()
 {
     QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
@@ -68,19 +74,19 @@ void Interact::onUpdateChartSignal(QString type, qint64 index)
     lasttype=type;
     switch(index) {
     case 0:
-        model->getTodayData(currentStation.second,type);
+        model->getTodayData(currentStation.id(),type);
         break;
     case 1:
-        model->getLast3DaysData(currentStation.second,type);
+        model->getLast3DaysData(currentStation.id(),type);
         break;
     case 2:
-        model->getWeeklyData(currentStation.second,type);
+        model->getWeeklyData(currentStation.id(),type);
         break;
     case 3:
-        model->getMonthlyData(currentStation.second,type);
+        model->getMonthlyData(currentStation.id(),type);
         break;
     case 4:
-        model->getYearlyData(currentStation.second,type);
+        model->getYearlyData(currentStation.id(),type);
         break;
     default:
         break;
@@ -96,14 +102,16 @@ void Interact::handleRetrieveStationsResult(HttpRequestWorker *worker)
         QJsonArray jsonArray = jsonObject["stations"].toArray();
         QString stationName;
         uint16_t stationNumber;
+        QString enableSettings = 0;
         QStringList list;
-        stationsAndIndexes.clear();
+        stations_.clear();
         list.clear();
         foreach (const QJsonValue & v, jsonArray) {
              stationName = v.toObject().value("Name").toString();
              stationNumber = v.toObject().value("StationID").toString().toInt();
+             enableSettings = v.toObject().value("enableSettings").toString();
              list.append(stationName);
-             stationsAndIndexes.append(std::make_pair(stationName,stationNumber));
+             stations_.append(Station(stationNumber,stationName,std::bitset<6>(enableSettings.toStdString())));
         }
         stations(list);
         onStationChanged(0);
@@ -115,27 +123,28 @@ void Interact::handleRetrieveStationsResult(HttpRequestWorker *worker)
 
 void Interact::updateDailyJSON()
 {
-    if(currentStation.first == "")
+    if(currentStation.name() == "")
         return;
     worker_->disconnect();
     QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"+
             SettingsManager::getSetting("Server","port").toString()+"/GetDaily";
     HttpRequestInput input(url,"GET");
-    input.add_var("station",QString::number(currentStation.second));
+    input.add_var("station",QString::number(currentStation.id()));
     input.add_var("date1",Calendar::Last24Hour().first.toString("yyyy-MM-dd"));
     connect(worker_,&HttpRequestWorker::on_execution_finished,this,&Interact::updateMeasurements);
     worker_->execute(&input);
 }
 
-void Interact::onStationChanged(int index)
+void Interact::onStationChanged(int /*index*/)
 {
     QObject* scombobox = engine_.rootObjects().first()->findChild<QObject*>("stationBoxObject");
     if(scombobox==nullptr)
         return;
     auto currentText = scombobox->property("currentText").toString();
-    auto it = std::find_if(stationsAndIndexes.begin(),stationsAndIndexes.end(),[=](auto val){if(val.first==currentText) return true; else return false;});
-    if(it!= stationsAndIndexes.end()){
+    auto it = std::find_if(stations_.begin(),stations_.end(),[=](auto val){if(val.name()==currentText) return true; else return false;});
+    if(it!= stations_.end()){
         currentStation = *it;
+        current(&currentStation);
     }
     updateDailyJSON();
 }

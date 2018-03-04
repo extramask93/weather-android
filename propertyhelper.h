@@ -11,7 +11,7 @@
           emit NAME ## Changed(value); \
         } \
        Q_SIGNAL void NAME ## Changed(TYPE value);\
-    private: \
+    public: \
        TYPE a_ ## NAME;
 
 #define READONLY_PROPERTY(TYPE, NAME) \

@@ -9,7 +9,7 @@ QT_CHARTS_USE_NAMESPACE
 Q_DECLARE_METATYPE(QAbstractSeries *)
 Q_DECLARE_METATYPE(QAbstractAxis *)
 
-MeasurementsModel::MeasurementsModel(QObject *parent,QAbstractSeries *series, QQmlApplicationEngine &engine) : QObject(parent), engine_{engine},
+MeasurementsModel::MeasurementsModel(QObject *parent,QAbstractSeries *series, QQmlApplicationEngine &engine) : engine_{engine},QObject(parent),
     series_{series}
 {
     dates(QStringList{});
@@ -107,18 +107,14 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
         tmp[0] = tmp[0].toUpper();
         cType(tmp);
         /*find smallest and biggest date*/
-        auto comp = [](const QPointF &a, const QPointF &b) {return a.x() < b.x();};
-        auto min = std::min_element(data_.begin(),data_.end(),comp);
-        auto max = std::max_element(data_.begin(),data_.end(),comp);
 
         //QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
         //auto axes = lineseries->attachedAxes();
           //  axes.at(0)->setMin(QDateTime::fromMSecsSinceEpoch(min->x()).addDays(-1));
             //axes.at(0)->setMax(QDateTime::fromMSecsSinceEpoch(max->x()).addDays(1));
         /*find smallest and biggest measurement*/
-        auto compy = [](const QPointF &a, const QPointF &b) {return a.y() < b.y();};
-        auto miny = std::min_element(data_.begin(),data_.end(),compy);
-        auto maxy = std::max_element(data_.begin(),data_.end(),compy);
+
+
         QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject");
         QMetaObject::invokeMethod(chart,"updater");
 //        if(miny->y()<0)

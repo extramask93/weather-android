@@ -2,9 +2,11 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
+import foo.bar 1.0
 Item {
     width: parent.width
     Background {anchors.fill: parent}
+    Component.onCompleted: Interact.onSettingsLoaded()
     Flickable {
         clip: true;
         anchors.fill: parent; // use a flickable to allow scrolling
@@ -46,6 +48,7 @@ Item {
             spacing: 15
             anchors.horizontalCenter: parent.horizontalCenter
                 ComboBox {
+                    id: cbox
                     Layout.alignment: Qt.AlignRight
                     Layout.preferredWidth: parent.width*0.8
                     Layout.maximumWidth: parent.width*0.9
@@ -61,10 +64,11 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
             }
             TextField {
-                id: idField
-                Layout.preferredWidth: parent.width-20
-                Layout.alignment: Qt.AlignHCenter
-                placeholderText: "id"
+                    id: idField
+                    Layout.preferredWidth: parent.width-20
+                    Layout.alignment: Qt.AlignHCenter
+                    placeholderText: "id"
+                    text: Interact.current.id
             }
             Label {
                 topPadding: 15
@@ -78,6 +82,7 @@ Item {
                 Layout.preferredWidth: parent.width-20
                 Layout.alignment: Qt.AlignHCenter
                 placeholderText: "station name"
+                text: Interact.current.name
             }
             Label {
                 font.pointSize: 14
@@ -88,17 +93,27 @@ Item {
             RowLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
+                clip: true
                 Label {text: "H:"}
                 TextField {
-                    Layout.preferredWidth: parent.width/4
+                    Layout.minimumWidth: parent.width/4
+                    Layout.maximumWidth: parent.width/3
+                    text: Interact.current.reftime.getHours()
+
                 }
                 Label {text: "M:"}
                 TextField {
-                    Layout.preferredWidth: parent.width/4
+                    Layout.minimumWidth: parent.width/4
+                    Layout.maximumWidth: parent.width/3
+                    text: Interact.current.reftime.getMinutes()
+
                 }
                 Label {text: "S:"}
                 TextField {
-                    Layout.preferredWidth: parent.width/4
+                    Layout.minimumWidth: parent.width/4
+                     Layout.maximumWidth: parent.width/3
+                     text: Interact.current.reftime.getSeconds()
+
                 }
             }
 
@@ -113,30 +128,39 @@ Item {
                 id: tempCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
+                checked: Interact.current.tempSensor.enabled
+
             }
             CheckBox {
                 text: "Humidty"
                 id: humidityCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
+                checked: Interact.current.humiditySensor.enabled
+
             }
             CheckBox {
                 text: "Lux"
                 id: luxCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
+                checked: Interact.current.luxSensor.enabled
+
             }
             CheckBox {
                 text: "Soil"
                 id: soildCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
+                checked: Interact.current.soilSensor.enabled
+
             }
             CheckBox {
                 text: "CO2"
                 id: co2ChecBox
                 indicator.width: idField.height
                 indicator.height: idField.height
+                checked: Interact.current.co2Sensor.enabled
             }
 
             RowLayout {
@@ -159,6 +183,7 @@ Item {
                     id: cancelButton
                     text: "Cancel"
                     onClicked: {
+                        cbox.model = false
                         loaderID.source = "MainView.qml"
                     }
                 }

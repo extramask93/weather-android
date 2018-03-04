@@ -16,14 +16,15 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     /*magic happens*/
     /*----------*/
-    QList<QObject*> datalist;
-    datalist.append(new Station(1,"prototype"));
-    datalist.append(new Station(2,"dupa"));
-    datalist.append(new Station(3,"wtf"));
+
+
 
     /*----------*/
     auto root_context = engine.rootContext();
-    root_context->setContextProperty("mymodel",QVariant::fromValue(datalist));
+    qRegisterMetaType<Station>("Station");
+    qRegisterMetaType<Sensor>("Sensor");
+    qmlRegisterType<Sensor>("foo.bar",1,0,"Sensor");
+    qmlRegisterType<Station>("foo.bar",1,0,"Station");
     SettingsManager settingsManager{};
     root_context->setContextProperty("SettingsManager",&settingsManager);
     LoginHandler login{&settingsManager};
