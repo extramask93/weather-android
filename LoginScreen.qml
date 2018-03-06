@@ -3,13 +3,30 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 
 Item {
+    Timer {
+        id: timer
+        interval: 3500
+        running: false
+        repeat: false
+        onTriggered: {infoLabelID.text = ""}
+    }
+
     Connections {
         target: LoginHandler
         onLoginFailed: {
             infoLabelID.text = message
+            busy.running  = false
+            loginButton.enabled = true
+            settingsButton.enabled = true
+            name.enabled=true
+            timer.restart()
         }
         onLoginSuccess: {
             loaderID.source = "MainView.qml"
+            busy.running  = false
+            loginButton.enabled = true
+            settingsButton.enabled = true
+            name.enabled = true
         }
     }
     objectName: "loginObject"
@@ -71,11 +88,16 @@ Item {
             spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
             Button {
+                id: loginButton
                 text: "Login"
                 height: userNameID.height
                 Layout.preferredWidth: userNameID.width/4
                 Layout.alignment: Qt.AlignRight
                 onClicked: {
+                    busy.running  = true
+                    loginButton.enabled = false
+                    settingsButton.enabled = false
+                    name.enabled= false
                     infoLabelID.text = ""
                     LoginHandler.login = userNameID.text
                     LoginHandler.password = passwordID.text
@@ -84,6 +106,7 @@ Item {
                 }
             }
             Button {
+                id: settingsButton
                 height: userNameID.height
                 Layout.preferredWidth: userNameID.width/4
                 Layout.alignment: Qt.AlignRight
@@ -101,6 +124,14 @@ Item {
             onLinkActivated: {
                 loaderID.source = "RegisterPage.qml"
             }
+        }
+        BusyIndicator {
+            id: busy
+            running: false
+            Layout.preferredHeight: userNameID.height*2
+            Layout.preferredWidth: height*2
+            Layout.alignment: Qt.AlignHCenter
+            z: 20
         }
     }
 }

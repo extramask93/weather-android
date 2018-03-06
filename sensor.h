@@ -16,10 +16,10 @@ class Sensor : public QObject
     AUTO_PROPERTY(QStringList, readingsDates)
     AUTO_PROPERTY(QList<double>, readings)
 public:
-    explicit Sensor(QString name="dupa", QObject *parent = nullptr);
-    Sensor(const Sensor& a):QObject(a.parent()) {a_currentVal= a.a_currentVal; a_name = a.a_name;a_enabled=a.a_enabled;}
+    explicit Sensor(QString name="", QObject *parent = nullptr);
+    Sensor(const Sensor& a);
     bool operator ==(const Sensor&a) {return this->a_name == a.a_name;}
-    Sensor& operator =(const Sensor& other) { this->name(other.name()); this->enabled(other.enabled()); return *this;}
+    Sensor& operator =(const Sensor& a);
 signals:
 
 public slots:

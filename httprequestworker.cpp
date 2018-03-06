@@ -4,7 +4,8 @@
 #include <QFileInfo>
 #include <QBuffer>
 
-QNetworkCookieJar* HttpRequestWorker::cookies = new QNetworkCookieJar{};
+QList<QNetworkCookie> HttpRequestWorker::cookies = QList<QNetworkCookie>{};
+QNetworkCookieJar *HttpRequestWorker::cookieJar = new QNetworkCookieJar();
 HttpRequestInput::HttpRequestInput() {
     initialize();
 }
@@ -41,6 +42,8 @@ HttpRequestWorker::HttpRequestWorker(QObject *parent)
     qsrand(QDateTime::currentDateTime().toTime_t());
 
     manager = new QNetworkAccessManager(this);
+    manager->setCookieJar(this->cookieJar);
+    cookieJar->setParent(nullptr);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(on_manager_finished(QNetworkReply*)));
 }
 
@@ -238,10 +241,8 @@ void HttpRequestWorker::execute(HttpRequestInput *input) {
 
 
     // prepare connection
-
     QNetworkRequest request = QNetworkRequest(QUrl(input->url_str));
-    //request.set
-    manager->setCookieJar(cookies);
+
 
     if (input->var_layout == URL_ENCODED) {
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
@@ -287,10 +288,6 @@ void HttpRequestWorker::execute()
 void HttpRequestWorker::on_manager_finished(QNetworkReply *reply) {
     error_type = reply->error();
     if (error_type == QNetworkReply::NoError) {
-        // somehow give reply a value
-//        QVariant cookieVar = reply->header(QNetworkRequest::SetCookieHeader);
-//        if (cookieVar.isValid())
-//            cookies = cookieVar.value<QList<QNetworkCookie> >();
         response = reply->readAll();
     }
     else {
@@ -299,6 +296,5 @@ void HttpRequestWorker::on_manager_finished(QNetworkReply *reply) {
     }
 
     reply->deleteLater();
-
     emit on_execution_finished(this);
 }

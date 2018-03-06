@@ -46,7 +46,8 @@ class HttpRequestWorker : public QObject {
     Q_OBJECT
 
 public:
-    static QNetworkCookieJar *cookies;
+    static QList<QNetworkCookie> cookies;
+    static QNetworkCookieJar *cookieJar;
     QByteArray response;
     QNetworkReply::NetworkError error_type;
     QString error_str;

@@ -18,6 +18,16 @@ Station::Station(quint8 id, QString name, std::bitset<6> enableSettins, QObject 
     a_reftime = QTime(1,3,4);
 }
 
+Station::~Station()
+{
+    delete a_batterySensor;
+    delete a_co2Sensor;
+    delete a_humiditySensor;
+    delete a_luxSensor;
+    delete a_soilSensor;
+    delete a_tempSensor;
+}
+
 Station::Station()
 {
 }

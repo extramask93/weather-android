@@ -25,7 +25,6 @@ void LoginHandler::Login(QString username, QString password)
     worker->execute(&input);
 }
 void LoginHandler::HandleLoginResult(HttpRequestWorker *worker) {
-    worker->deleteLater();
     if(worker->error_type == QNetworkReply::NoError) {
         emit loginSuccess();
     }
@@ -35,6 +34,7 @@ void LoginHandler::HandleLoginResult(HttpRequestWorker *worker) {
         else
             emit loginFailed(worker->error_type,worker->error_str);
     }
+    worker->deleteLater();
 }
 void LoginHandler::LogOut()
 {

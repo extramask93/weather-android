@@ -25,6 +25,7 @@ class Station : public QObject
     AUTO_PROPERTY(Sensor*, batterySensor)
 public:
     Station(quint8 id,QString name = "", std::bitset<6> enableSettins = 0x111111,QObject *parent = nullptr);
+    ~Station();
     Station(const Station& second): QObject(second.parent()){
         a_id = second.id();
         a_name = second.name();
