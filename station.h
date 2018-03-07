@@ -26,28 +26,35 @@ class Station : public QObject
 public:
     Station(quint8 id,QString name = "", std::bitset<6> enableSettins = 0x111111,QObject *parent = nullptr);
     ~Station();
+    void setFromBool(bool temp,bool humidity,bool lux, bool soil, bool battery, bool co2);
     Station(const Station& second): QObject(second.parent()){
         a_id = second.id();
         a_name = second.name();
-        this->a_tempSensor = second.a_tempSensor;
-        this->a_humiditySensor = second.a_humiditySensor;
-        this->a_luxSensor = second.a_luxSensor;
-        this->a_soilSensor = second.a_soilSensor;
-        this->a_batterySensor = second.a_batterySensor;
-        this->a_co2Sensor = second.a_co2Sensor;
+        a_tempSensor = new Sensor();
+        *a_tempSensor = *second.a_tempSensor;
+        a_humiditySensor = new Sensor();
+        *a_humiditySensor = *second.a_humiditySensor;
+        a_luxSensor = new Sensor();
+        *a_luxSensor = *second.a_luxSensor;
+        a_soilSensor = new Sensor();
+        *a_soilSensor = *second.a_soilSensor;
+        a_batterySensor = new Sensor();
+        *a_batterySensor = *second.a_batterySensor;
+        a_co2Sensor = new Sensor();
+        *a_co2Sensor = *second.a_co2Sensor;
         a_reftime = second.reftime();
     }
     bool operator ==(const Station &s) {if(this->id()==s.id() && this->name()==s.name()) return true; return false;}
     Station& operator =(const Station &s) {
-        this->a_id = s.id();
-        this->a_name = s.name();
-        this->a_tempSensor = s.a_tempSensor;
-        this->a_humiditySensor = s.a_humiditySensor;
-        this->a_luxSensor = s.a_luxSensor;
-        this->a_soilSensor = s.a_soilSensor;
-        this->a_batterySensor = s.a_batterySensor;
-        this->a_co2Sensor = s.a_co2Sensor;
-        this->a_reftime = s.reftime();
+        id(s.id());
+        name(s.name());
+        reftime(s.reftime());
+        tempSensor(s.a_tempSensor);
+        humiditySensor(s.a_humiditySensor);
+        luxSensor(s.a_luxSensor);
+        soilSensor(s.a_soilSensor);
+        batterySensor(s.a_batterySensor);
+        co2Sensor(s.a_co2Sensor);
         return *this;
     }
     Station();

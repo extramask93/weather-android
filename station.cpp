@@ -20,12 +20,22 @@ Station::Station(quint8 id, QString name, std::bitset<6> enableSettins, QObject 
 
 Station::~Station()
 {
-    delete a_batterySensor;
-    delete a_co2Sensor;
-    delete a_humiditySensor;
-    delete a_luxSensor;
-    delete a_soilSensor;
-    delete a_tempSensor;
+    delete a_batterySensor; a_batterySensor = nullptr;
+    delete a_co2Sensor; a_co2Sensor = nullptr;
+    delete a_humiditySensor; a_humiditySensor = nullptr;
+    delete a_luxSensor;  a_luxSensor = nullptr;
+    delete a_soilSensor; a_soilSensor = nullptr;
+    delete a_tempSensor; a_tempSensor = nullptr;
+}
+
+void Station::setFromBool(bool temp, bool humidity, bool lux, bool soil, bool battery, bool co2)
+{
+    tempSensor()->enabled(temp);
+    humiditySensor()->enabled(humidity);
+    soilSensor()->enabled(soil);
+    batterySensor()->enabled(battery);
+    luxSensor()->enabled(lux);
+    co2Sensor()->enabled(co2);
 }
 
 Station::Station()

@@ -4,10 +4,11 @@ import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
 import foo.bar 1.0
 Item {
-    width: parent.width
+    width: rootID.width
     Background {anchors.fill: parent}
     Component.onCompleted: Interact.onSettingsLoaded()
     Flickable {
+        id: flick
         clip: true;
         anchors.fill: parent; // use a flickable to allow scrolling
         contentWidth: parent.width; // flickable content width is its own width, scroll only vertically
@@ -68,7 +69,7 @@ Item {
                     Layout.preferredWidth: parent.width-20
                     Layout.alignment: Qt.AlignHCenter
                     placeholderText: "id"
-                    text: Interact.current.id
+                    text: CurrentStation.id
             }
             Label {
                 topPadding: 15
@@ -82,7 +83,7 @@ Item {
                 Layout.preferredWidth: parent.width-20
                 Layout.alignment: Qt.AlignHCenter
                 placeholderText: "station name"
-                text: Interact.current.name
+                text: CurrentStation.name
             }
             Label {
                 font.pointSize: 14
@@ -96,23 +97,20 @@ Item {
                 clip: true
                 Label {text: "H:"}
                 TextField {
-                    Layout.minimumWidth: parent.width/4
-                    Layout.maximumWidth: parent.width/3
-                    text: Interact.current.reftime.getHours()
+                    Layout.maximumWidth: flick.width/4
+                    text: CurrentStation.reftime.getHours()
 
                 }
                 Label {text: "M:"}
                 TextField {
-                    Layout.minimumWidth: parent.width/4
-                    Layout.maximumWidth: parent.width/3
-                    text: Interact.current.reftime.getMinutes()
+                    Layout.maximumWidth: flick.width/4
+                    text: CurrentStation.reftime.getMinutes()
 
                 }
                 Label {text: "S:"}
                 TextField {
-                    Layout.minimumWidth: parent.width/4
-                     Layout.maximumWidth: parent.width/3
-                     text: Interact.current.reftime.getSeconds()
+                     Layout.maximumWidth: flick.width/4
+                     text: CurrentStation.reftime.getSeconds()
 
                 }
             }
@@ -128,7 +126,7 @@ Item {
                 id: tempCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: Interact.current.tempSensor.enabled
+                checked: CurrentStation.tempSensor.enabled
 
             }
             CheckBox {
@@ -136,7 +134,7 @@ Item {
                 id: humidityCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: Interact.current.humiditySensor.enabled
+                checked: CurrentStation.humiditySensor.enabled
 
             }
             CheckBox {
@@ -144,7 +142,7 @@ Item {
                 id: luxCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: Interact.current.luxSensor.enabled
+                checked: CurrentStation.luxSensor.enabled
 
             }
             CheckBox {
@@ -152,7 +150,7 @@ Item {
                 id: soildCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: Interact.current.soilSensor.enabled
+                checked: CurrentStation.soilSensor.enabled
 
             }
             CheckBox {
@@ -160,7 +158,7 @@ Item {
                 id: co2ChecBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: Interact.current.co2Sensor.enabled
+                checked: CurrentStation.co2Sensor.enabled
             }
 
             RowLayout {

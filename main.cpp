@@ -30,8 +30,10 @@ int main(int argc, char *argv[])
     LoginHandler login{&settingsManager};
     root_context->setContextProperty("LoginHandler",&login);
     MeasurementsModel model{nullptr,nullptr,engine};
+    Station currentStation(0);
+    root_context->setContextProperty("CurrentStation", &currentStation);
     root_context->setContextProperty("Model",&model);
-    Interact interact{0,engine,&model, &login};
+    Interact interact{0,engine,&model, &login, &currentStation};
     root_context->setContextProperty("Interact",&interact);
      qmlRegisterType<RegisterModel>("com.registration",1,0,"RegisterModel");
     /*-----------------------------*/

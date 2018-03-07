@@ -21,30 +21,42 @@ class Interact : public QObject
     Q_OBJECT
     AUTO_PROPERTY(QStringList, stations)
     AUTO_PROPERTY(QList<QObject*>, stations2)
-    AUTO_PROPERTY(Station*, current)
+
 public:
-    explicit Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell, LoginHandler *login);
+    explicit Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell, LoginHandler *login, Station *currentStat);
+    ~Interact();
     Q_INVOKABLE void updateStation(quint8 id,QString name, quint8 hour, quint8 minute, quint8 second,
-                                   bool temp, bool hum, bool lux,bool soil, bool bat, bool co2){}
+                                   bool temp, bool hum, bool lux,bool soil, bool bat, bool co2);
     Q_INVOKABLE void addStation(quint8 id,QString name, quint8 hour, quint8 minute, quint8 second,
-                                bool temp, bool hum, bool lux,bool soil, bool bat, bool co2){}
-    Q_INVOKABLE void removeStation(quint8 id){;}
+                                bool temp, bool hum, bool lux,bool soil, bool bat, bool co2);
+    Q_INVOKABLE void removeCurrentStation();
 public slots:
     void onMainViewLoaded();
     void onSettingsLoaded();
     void RetrieveStations();
     void onUpdateChartSignal(QString type, qint64 index);
     void handleRetrieveStationsResult(HttpRequestWorker *);
+    void handleUpdateStationResult(HttpRequestWorker *);
+    void handleRemoveCurrentStationResult(HttpRequestWorker*);
+    void handleAddStationResult(HttpRequestWorker*);
     void updateMeasurements(HttpRequestWorker *);
     void updateDailyJSON();
     void onStationChanged(int);
+signals:
+    void updateFailed(QString reason);
+    void updateSucceed();
+    void removeFailed(QString reason);
+    void removeSucceed();
+    void addFailed(QString reason);
+    void addSucceed();
 private:
+    Station tempStation;
     QQmlApplicationEngine &engine_;
     QList<Measurement*> measurementList_;
     SettingsHandler *settings_;
     QObject *rootObject_;
     HttpRequestWorker *worker_;
-    Station currentStation;
+    Station *currentStation;
     QList<Station> stations_;
     MeasurementsModel *model;
     LoginHandler *login_;
