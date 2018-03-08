@@ -23,9 +23,10 @@ public:
     Sensor luxSensor;
     Sensor batterySensor;
 public:
-    Station(quint8 id,QString name = "", std::bitset<6> enableSettins = 0x111111);
+    Station(quint8 id,QString name = "", std::bitset<6> enableSettins = 0x0);
     ~Station();
     void setFromBool(bool temp,bool humidity,bool lux, bool soil, bool battery, bool co2);
+    QList<bool> getBool();
     bool operator ==(const Station &s) {if(this->id==s.id && this->name==s.name) return true; return false;}
     Station();
     void save();

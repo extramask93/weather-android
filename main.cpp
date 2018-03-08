@@ -8,6 +8,7 @@
 #include "interact.h"
 #include "measurementsmodel.h"
 #include "settingsmanager.h"
+#include "stationmanager.h"
 #include "registermodel.h"
 #include "station.h"
 int main(int argc, char *argv[])
@@ -29,6 +30,9 @@ int main(int argc, char *argv[])
 
     Interact interact{0,engine,&model, &login};
     root_context->setContextProperty("Interact",&interact);
+
+    StationManager stationManager(nullptr);
+    root_context->setContextProperty("StationManager", &stationManager);
     /*-----------------------------*/
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

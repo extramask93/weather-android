@@ -15,7 +15,7 @@ Station::Station(quint8 id, QString name, std::bitset<6> enableSettins): id(id),
     luxSensor.enabled=enableSettins[2];
     soilSensor = Sensor("soil");
     soilSensor.enabled =enableSettins[3];
-    reftime = QTime(1,3,4);
+    reftime = QTime(0,0,0);
 }
 
 Station::~Station()
@@ -30,6 +30,12 @@ void Station::setFromBool(bool temp, bool humidity, bool lux, bool soil, bool ba
     batterySensor.enabled=battery;
     luxSensor.enabled=lux;
     co2Sensor.enabled=co2;
+}
+
+QList<bool> Station::getBool()
+{
+    return QList<bool>{tempSensor.enabled,humiditySensor.enabled,luxSensor.enabled,soilSensor.enabled, batterySensor.enabled,
+                        co2Sensor.enabled};
 }
 
 Station::Station()

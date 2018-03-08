@@ -2,11 +2,10 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
-import foo.bar 1.0
 Item {
     width: rootID.width
     Background {anchors.fill: parent}
-    Component.onCompleted: Interact.onSettingsLoaded()
+    Component.onCompleted: StationManager.retrieveStations()
     Flickable {
         id: flick
         clip: true;
@@ -55,6 +54,7 @@ Item {
                     Layout.maximumWidth: parent.width*0.9
                     opacity: 0.5
                     model: Interact.stations
+                    onCurrentIndexChanged: StationManager.onStationChanged(currentIndex)
                 }
 
             Label {
@@ -69,7 +69,7 @@ Item {
                     Layout.preferredWidth: parent.width-20
                     Layout.alignment: Qt.AlignHCenter
                     placeholderText: "id"
-                    text: CurrentStation.id
+                    text: StationManager.currentStationID
             }
             Label {
                 topPadding: 15
@@ -83,7 +83,7 @@ Item {
                 Layout.preferredWidth: parent.width-20
                 Layout.alignment: Qt.AlignHCenter
                 placeholderText: "station name"
-                text: CurrentStation.name
+                text: StationManager.currentStationName
             }
             Label {
                 font.pointSize: 14
@@ -98,19 +98,19 @@ Item {
                 Label {text: "H:"}
                 TextField {
                     Layout.maximumWidth: flick.width/4
-                    text: CurrentStation.reftime.getHours()
+                    text: StationManager.currentStationTime.getHours()
 
                 }
                 Label {text: "M:"}
                 TextField {
                     Layout.maximumWidth: flick.width/4
-                    text: CurrentStation.reftime.getMinutes()
+                    text: StationManager.currentStationTime.getMinutes()
 
                 }
                 Label {text: "S:"}
                 TextField {
                      Layout.maximumWidth: flick.width/4
-                     text: CurrentStation.reftime.getSeconds()
+                     text: StationManager.currentStationTime.getSeconds()
 
                 }
             }
@@ -126,7 +126,7 @@ Item {
                 id: tempCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                //checked: CurrentStation.tempSensor.enabled
+                checked: StationManager.currentStationEnables[0]
 
             }
             CheckBox {
@@ -134,7 +134,7 @@ Item {
                 id: humidityCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: CurrentStation.humiditySensor.enabled
+                checked: StationManager.currentStationEnables[1]
 
             }
             CheckBox {
@@ -142,7 +142,7 @@ Item {
                 id: luxCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: CurrentStation.luxSensor.enabled
+                checked: StationManager.currentStationEnables[2]
 
             }
             CheckBox {
@@ -150,7 +150,15 @@ Item {
                 id: soildCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: CurrentStation.soilSensor.enabled
+                checked: StationManager.currentStationEnables[3]
+
+            }
+            CheckBox {
+                text: "Battery"
+                id: batteryCheckBox
+                indicator.width: idField.height
+                indicator.height: idField.height
+                checked: StationManager.currentStationEnables[4]
 
             }
             CheckBox {
@@ -158,7 +166,7 @@ Item {
                 id: co2ChecBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: CurrentStation.co2Sensor.enabled
+                checked: StationManager.currentStationEnables[5]
             }
 
             RowLayout {

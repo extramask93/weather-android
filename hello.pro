@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     settingsmanager.cpp \
     registermodel.cpp \
     station.cpp \
-    sensor.cpp
+    sensor.cpp \
+    stationmanager.cpp
 
 RESOURCES += qml.qrc \
     envmresources.qrc \
@@ -56,4 +57,5 @@ HEADERS += \
     settingsmanager.h \
     registermodel.h \
     station.h \
-    sensor.h
+    sensor.h \
+    stationmanager.h

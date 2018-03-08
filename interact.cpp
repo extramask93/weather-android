@@ -50,60 +50,7 @@ Interact::~Interact()
     measurementList_.clear();
 }
 
-void Interact::updateStation(quint8 id, QString name, quint8 hour, quint8 minute, quint8 second, bool temp, bool hum, bool lux, bool soil, bool bat, bool co2)
-{
-    tempStation = Station(id,name);
-    tempStation.reftime = QTime(hour,minute,second);
-    tempStation.setFromBool(temp,hum,lux,soil,bat,co2);
-    QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
-            +":"+SettingsManager::getSetting("Server","port").toString()+"/ModStation";
-    HttpRequestInput input(url,"POST");
-    input.add_var("ID",QString::number(tempStation.id));
-    input.add_var("Name",tempStation.name);
-    input.add_var("RefTime",tempStation.reftime.toString("hh:mm:ss"));
-    input.add_var("Temperature",QString::number(tempStation.tempSensor.enabled));
-    input.add_var("Humidity",QString::number(tempStation.humiditySensor.enabled));
-    input.add_var("Lux",QString::number(tempStation.luxSensor.enabled));
-    input.add_var("Soil",QString::number(tempStation.soilSensor.enabled));
-    input.add_var("Battery",QString::number(tempStation.batterySensor.enabled));
-    input.add_var("Co2",QString::number(tempStation.co2Sensor.enabled));
-    HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker,&HttpRequestWorker::on_execution_finished,this,&Interact::handleUpdateStationResult);
-    worker->execute(&input);
-}
 
-void Interact::addStation(quint8 id, QString name, quint8 hour, quint8 minute, quint8 second, bool temp, bool hum, bool lux, bool soil, bool bat, bool co2)
-{
-    tempStation = Station(id,name);
-    tempStation.reftime = QTime(hour,minute,second);
-    tempStation.setFromBool(temp,hum,lux,soil,bat,co2);
-    QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
-            +":"+SettingsManager::getSetting("Server","port").toString()+"/AddStation";
-    HttpRequestInput input(url,"POST");
-    input.add_var("ID",QString::number(tempStation.id));
-    input.add_var("Name",tempStation.name);
-    input.add_var("RefTime",tempStation.reftime.toString("hh:mm:ss"));
-    input.add_var("Temperature",QString::number(tempStation.tempSensor.enabled));
-    input.add_var("Humidity",QString::number(tempStation.humiditySensor.enabled));
-    input.add_var("Lux",QString::number(tempStation.luxSensor.enabled));
-    input.add_var("Soil",QString::number(tempStation.soilSensor.enabled));
-    input.add_var("Battery",QString::number(tempStation.batterySensor.enabled));
-    input.add_var("Co2",QString::number(tempStation.co2Sensor.enabled));
-    HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker,&HttpRequestWorker::on_execution_finished,this,&Interact::handleAddStationResult);
-    worker->execute(&input);
-}
-
-void Interact::removeCurrentStation()
-{
-    QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
-            +":"+SettingsManager::getSetting("Server","port").toString()+"/RemoveStation";
-    HttpRequestInput input(url,"POST");
-    input.add_var("ID",QString::number(currentStation->id));
-    HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker,&HttpRequestWorker::on_execution_finished,this,&Interact::handleRemoveCurrentStationResult);
-    worker->execute(&input);
-}
 
 void Interact::onMainViewLoaded()
 {
@@ -184,38 +131,6 @@ void Interact::handleRetrieveStationsResult(HttpRequestWorker *worker)
     }
 }
 
-void Interact::handleUpdateStationResult(HttpRequestWorker *worker)
-{
-    if(worker->error_type == QNetworkReply::NoError) {
-        RetrieveStations();
-        emit updateSucceed();
-    }
-    else {
-        emit updateFailed(worker->error_str);
-    }
-}
-
-void Interact::handleRemoveCurrentStationResult(HttpRequestWorker *worker)
-{
-    if(worker->error_type == QNetworkReply::NoError) {
-        RetrieveStations();
-        emit removeSucceed();
-    }
-    else {
-        emit removeFailed(worker->error_str);
-    }
-}
-
-void Interact::handleAddStationResult(HttpRequestWorker *worker)
-{
-    if(worker->error_type == QNetworkReply::NoError) {
-        RetrieveStations();
-        emit addSucceed();
-    }
-    else {
-        emit addFailed(worker->error_str);
-    }
-}
 
 void Interact::updateDailyJSON()
 {
