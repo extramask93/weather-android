@@ -126,7 +126,7 @@ Item {
                 id: tempCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
-                checked: CurrentStation.tempSensor.enabled
+                //checked: CurrentStation.tempSensor.enabled
 
             }
             CheckBox {

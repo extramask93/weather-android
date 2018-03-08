@@ -20,10 +20,13 @@ class Interact : public QObject
 {
     Q_OBJECT
     AUTO_PROPERTY(QStringList, stations)
-    AUTO_PROPERTY(QList<QObject*>, stations2)
+    AUTO_PROPERTY(QString, currentStationName)
+    AUTO_PROPERTY(quint8, currentStationID)
+    AUTO_PROPERTY(QTime, currentStationTime)
+    AUTO_PROPERTY(QList<bool>, currentStationEnables)
 
 public:
-    explicit Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell, LoginHandler *login, Station *currentStat);
+    explicit Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell, LoginHandler *login);
     ~Interact();
     Q_INVOKABLE void updateStation(quint8 id,QString name, quint8 hour, quint8 minute, quint8 second,
                                    bool temp, bool hum, bool lux,bool soil, bool bat, bool co2);

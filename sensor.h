@@ -1,29 +1,21 @@
 #ifndef SENSOR_H
 #define SENSOR_H
-
-#include <QObject>
-#include "propertyhelper.h"
-
+#include <QString>
+#include <QStringList>
 class Station;
-class Sensor : public QObject
+class Sensor
 {
-    Q_OBJECT
-    AUTO_PROPERTY(double,currentVal)
-    AUTO_PROPERTY(bool,currentValExists)
-    AUTO_PROPERTY(QString, name)
-    AUTO_PROPERTY(QString, unit)
-    AUTO_PROPERTY(bool, enabled)
-    AUTO_PROPERTY(QStringList, readingsDates)
-    AUTO_PROPERTY(QList<double>, readings)
 public:
-    explicit Sensor(QString name="", QObject *parent = nullptr);
-    Sensor(const Sensor& a);
-    bool operator ==(const Sensor&a) {return this->a_name == a.a_name;}
-    Sensor& operator =(const Sensor& a);
-signals:
-
-public slots:
+    double currentVal;
+    bool currentValExists;
+    QString name;
+    QString unit;
+    bool enabled;
+    QStringList readingsDates;
+    QList<double> readings;
+public:
+    explicit Sensor(QString name="");
+    bool operator ==(const Sensor&a) {return this->name == a.name;}
 private:
 };
-Q_DECLARE_METATYPE(Sensor)
 #endif // SENSOR_H
