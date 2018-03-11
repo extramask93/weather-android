@@ -25,7 +25,8 @@ class Interact : public QObject
 public:
     explicit Interact(QObject *parent, QQmlApplicationEngine &engine, MeasurementsModel *modell, LoginHandler *login);
     ~Interact();
-
+    Q_INVOKABLE pauseTimer();
+    Q_INVOKABLE startTimer();
 public slots:
     void onMainViewLoaded();
     void onSettingsLoaded();
@@ -44,7 +45,7 @@ private:
     SettingsHandler *settings_;
     QObject *rootObject_;
     HttpRequestWorker *worker_;
-    Station *currentStation;
+    Station currentStation;
     QList<Station> stations_;
     MeasurementsModel *model;
     LoginHandler *login_;

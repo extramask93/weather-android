@@ -4,17 +4,17 @@
 Station::Station(quint8 id, QString name, std::bitset<6> enableSettins): id(id), name(name)
 {
     tempSensor = Sensor("temperature");
-    tempSensor.enabled = enableSettins[0];
+    tempSensor.enabled = enableSettins[5];
     batterySensor = Sensor("bat");
-    batterySensor.enabled=enableSettins[4];
+    batterySensor.enabled=enableSettins[1];
     humiditySensor = Sensor("humidity");
-    humiditySensor.enabled=enableSettins[1];
+    humiditySensor.enabled=enableSettins[4];
     co2Sensor = Sensor("co2");
-    co2Sensor.enabled=enableSettins[5];
+    co2Sensor.enabled=enableSettins[0];
     luxSensor = Sensor("lux");
-    luxSensor.enabled=enableSettins[2];
+    luxSensor.enabled=enableSettins[3];
     soilSensor = Sensor("soil");
-    soilSensor.enabled =enableSettins[3];
+    soilSensor.enabled =enableSettins[2];
     reftime = QTime(0,0,0);
 }
 

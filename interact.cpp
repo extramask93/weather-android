@@ -50,6 +50,16 @@ Interact::~Interact()
     measurementList_.clear();
 }
 
+Interact::pauseTimer()
+{
+    timer->stop();
+}
+
+Interact::startTimer()
+{
+    timer->start(3600);
+}
+
 
 
 void Interact::onMainViewLoaded()
@@ -83,19 +93,19 @@ void Interact::onUpdateChartSignal(QString type, qint64 index)
     lasttype=type;
     switch(index) {
     case 0:
-        model->getTodayData(currentStation->id,type);
+        model->getTodayData(currentStation.id,type);
         break;
     case 1:
-        model->getLast3DaysData(currentStation->id,type);
+        model->getLast3DaysData(currentStation.id,type);
         break;
     case 2:
-        model->getWeeklyData(currentStation->id,type);
+        model->getWeeklyData(currentStation.id,type);
         break;
     case 3:
-        model->getMonthlyData(currentStation->id,type);
+        model->getMonthlyData(currentStation.id,type);
         break;
     case 4:
-        model->getYearlyData(currentStation->id,type);
+        model->getYearlyData(currentStation.id,type);
         break;
     default:
         break;
@@ -129,18 +139,19 @@ void Interact::handleRetrieveStationsResult(HttpRequestWorker *worker)
         login_->LogOut();
          timer->stop();
     }
+    worker->deleteLater();
 }
 
 
 void Interact::updateDailyJSON()
 {
-    if(currentStation->name == "")
+    if(currentStation.name == "")
         return;
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"+
             SettingsManager::getSetting("Server","port").toString()+"/GetDaily";
     HttpRequestInput input(url,"GET");
-    input.add_var("station",QString::number(currentStation->id));
+    input.add_var("station",QString::number(currentStation.id));
     input.add_var("date1",Calendar::Last24Hour().first.toString("yyyy-MM-dd"));
     connect(worker,&HttpRequestWorker::on_execution_finished,this,&Interact::updateMeasurements);
     worker->execute(&input);
@@ -154,7 +165,7 @@ void Interact::onStationChanged(int /*index*/)
     auto currentText = scombobox->property("currentText").toString();
     auto it = std::find_if(stations_.begin(),stations_.end(),[=](auto val){if(val.name==currentText) return true; else return false;});
     if(it!= stations_.end()){
-        *currentStation = *it;
+        currentStation = *it;
     }
     updateDailyJSON();
 }
@@ -162,4 +173,5 @@ void Interact::updateMeasurements(HttpRequestWorker *worker) {
     for(auto measurement : measurementList_) {
         measurement->LoadFromJSON(worker->response);
     }
+    worker->deleteLater();
 }

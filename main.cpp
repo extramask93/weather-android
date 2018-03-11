@@ -14,6 +14,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    auto icon  = QIcon("C:Users\\LENOVO\\Documents\\hello\\Images\\icon.png");
     QQmlApplicationEngine engine;
     auto root_context = engine.rootContext();
 
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
     Interact interact{0,engine,&model, &login};
     root_context->setContextProperty("Interact",&interact);
 
-    StationManager stationManager(nullptr);
+    StationManager stationManager(&engine,nullptr);
     root_context->setContextProperty("StationManager", &stationManager);
     /*-----------------------------*/
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

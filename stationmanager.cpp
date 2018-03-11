@@ -2,9 +2,14 @@
 #include "settingsmanager.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QQmlContext>
 #include <QJsonArray>
-StationManager::StationManager(QObject *parent) : QObject(parent)
+#include <algorithm>
+StationManager::StationManager(QQmlApplicationEngine * engine,QObject *parent) : QObject(parent)
 {
+    stationsStrings = new QStringListModel(this);
+    this->engine = engine;
+    engine->rootContext()->setContextProperty("StationsStrings",stationsStrings);
     currentStation_ = Station(0,"Empty");
     currentStationEnables(currentStation_.getBool());
     currentStationID(currentStation_.id);
@@ -20,15 +25,15 @@ void StationManager::updateStation(quint8 id, QString name, quint8 hour, quint8 
     QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
             +":"+SettingsManager::getSetting("Server","port").toString()+"/ModStation";
     HttpRequestInput input(url,"POST");
-    input.add_var("ID",QString::number(tempStation_.id));
+    input.add_var("StationID",QString::number(tempStation_.id));
     input.add_var("Name",tempStation_.name);
-    input.add_var("RefTime",tempStation_.reftime.toString("hh:mm:ss"));
-    input.add_var("Temperature",QString::number(tempStation_.tempSensor.enabled));
-    input.add_var("Humidity",QString::number(tempStation_.humiditySensor.enabled));
-    input.add_var("Lux",QString::number(tempStation_.luxSensor.enabled));
-    input.add_var("Soil",QString::number(tempStation_.soilSensor.enabled));
-    input.add_var("Battery",QString::number(tempStation_.batterySensor.enabled));
-    input.add_var("Co2",QString::number(tempStation_.co2Sensor.enabled));
+    input.add_var("refTime",tempStation_.reftime.toString("hh:mm:ss"));
+    auto list = tempStation_.getBool();
+    QString tempstr = "";
+    for(auto element:list) {
+        tempstr+= QString::number(element);
+    }
+    input.add_var("settings",tempstr);
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     connect(worker,&HttpRequestWorker::on_execution_finished,this,&StationManager::handleUpdateStationResult);
     worker->execute(&input);
@@ -42,15 +47,15 @@ void StationManager::addStation(quint8 id, QString name, quint8 hour, quint8 min
     QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
             +":"+SettingsManager::getSetting("Server","port").toString()+"/AddStation";
     HttpRequestInput input(url,"POST");
-    input.add_var("ID",QString::number(tempStation_.id));
+    input.add_var("StationID",QString::number(tempStation_.id));
     input.add_var("Name",tempStation_.name);
-    input.add_var("RefTime",tempStation_.reftime.toString("hh:mm:ss"));
-    input.add_var("Temperature",QString::number(tempStation_.tempSensor.enabled));
-    input.add_var("Humidity",QString::number(tempStation_.humiditySensor.enabled));
-    input.add_var("Lux",QString::number(tempStation_.luxSensor.enabled));
-    input.add_var("Soil",QString::number(tempStation_.soilSensor.enabled));
-    input.add_var("Battery",QString::number(tempStation_.batterySensor.enabled));
-    input.add_var("Co2",QString::number(tempStation_.co2Sensor.enabled));
+    input.add_var("refTime",tempStation_.reftime.toString("hh:mm:ss"));
+    auto list = tempStation_.getBool();
+    QString tempstr = "";
+    for(auto element:list) {
+        tempstr+= QString::number(element);
+    }
+    input.add_var("settings",tempstr);
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     connect(worker,&HttpRequestWorker::on_execution_finished,this,&StationManager::handleAddStationResult);
     worker->execute(&input);
@@ -61,7 +66,7 @@ void StationManager::removeCurrentStation()
     QString url = QString("http://")+SettingsManager::getSetting("Server","ip").toString()
             +":"+SettingsManager::getSetting("Server","port").toString()+"/RemoveStation";
     HttpRequestInput input(url,"POST");
-    input.add_var("ID",QString::number(currentStation_.id));
+    input.add_var("StationID",QString::number(currentStation_.id));
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     connect(worker,&HttpRequestWorker::on_execution_finished,this,&StationManager::handleRemoveCurrentStationResult);
     worker->execute(&input);
@@ -75,7 +80,8 @@ void StationManager::setCurrentStation(int index)
     currentStationID(currentStation_.id);
     currentStationName(currentStation_.name);
     currentStationTime(currentStation_.reftime);
-    currentStationEnables(QList<bool>{currentStation_.tempSensor.enabled,currentStation_.humiditySensor.enabled, currentStation_.soilSensor.enabled,
+    currentStationEnables(QList<bool>{currentStation_.tempSensor.enabled,currentStation_.humiditySensor.enabled, currentStation_.luxSensor.enabled,
+                                      currentStation_.soilSensor.enabled,
                                       currentStation_.batterySensor.enabled, currentStation_.co2Sensor.enabled});
 }
 
@@ -102,21 +108,31 @@ void StationManager::handleRetrieveStationsResult(HttpRequestWorker *worker)
         QJsonObject jsonObject = document.object();
         QJsonArray jsonArray = jsonObject["stations"].toArray();
         QString stationName;
+        QString refTime;
         uint16_t stationNumber;
         QString enableSettings = 0;
         QStringList list;
         realStations_.clear();
+        stationsStrings->setStringList(QStringList());
         list.clear();
         foreach (const QJsonValue & v, jsonArray) {
              stationName = v.toObject().value("Name").toString();
              stationNumber = v.toObject().value("StationID").toString().toInt();
              enableSettings = v.toObject().value("enableSettings").toString();
+             refTime = v.toObject().value("refTime").toString();
              list.append(stationName);
-             realStations_.append(Station(stationNumber,stationName,std::bitset<6>(enableSettings.toStdString())));
+             Station tempStation(stationNumber,stationName,std::bitset<6>(enableSettings.toStdString()));
+             auto tim = QTime::fromString(refTime,"H:mm:ss");
+             tempStation.reftime = tim;
+             realStations_.append(tempStation);
+
         }
+        stationsStrings->setStringList(list);
+        //engine->rootContext()->setContextProperty("StationsStrings",stationsStrings);
         stations(list);
         onStationChanged(0);
     }
+    worker->deleteLater();
 }
 
 void StationManager::handleUpdateStationResult(HttpRequestWorker *worker)
@@ -126,8 +142,9 @@ void StationManager::handleUpdateStationResult(HttpRequestWorker *worker)
         emit updateSucceed();
     }
     else {
-        emit updateFailed(worker->error_str);
+        emit updateFailed(getMessageString(worker));
     }
+    worker->deleteLater();
 }
 
 void StationManager::handleRemoveCurrentStationResult(HttpRequestWorker *worker)
@@ -137,8 +154,9 @@ void StationManager::handleRemoveCurrentStationResult(HttpRequestWorker *worker)
         emit removeSucceed();
     }
     else {
-        emit removeFailed(worker->error_str);
+        emit removeFailed(getMessageString(worker));
     }
+    worker->deleteLater();
 }
 
 void StationManager::handleAddStationResult(HttpRequestWorker *worker)
@@ -148,6 +166,18 @@ void StationManager::handleAddStationResult(HttpRequestWorker *worker)
         emit addSucceed();
     }
     else {
-        emit addFailed(worker->error_str);
+        emit addFailed(getMessageString(worker));
     }
+    worker->deleteLater();
+}
+
+QString StationManager::getMessageString(HttpRequestWorker *worker)
+{
+    QJsonParseError error;
+    QJsonDocument document = QJsonDocument::fromJson(worker->response,&error);
+    if(error.error != QJsonParseError::NoError)
+        return worker->error_str;
+    QJsonObject jsonObject = document.object();
+    return jsonObject.value("message").toString();
+
 }

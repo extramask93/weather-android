@@ -10,6 +10,7 @@ Item {
     objectName: "mainViewObject"
     Background {id:background}
     Component.onCompleted: Interact.onMainViewLoaded()
+    Component.onDestruction: Interact.pauseTimer()
     ComboBox {
             objectName: "stationBoxObject"
             anchors.horizontalCenter: parent.horizontalCenter
@@ -19,6 +20,7 @@ Item {
             spacing: 4
             model: Interact.stations
     }
+
     MyChart{
         anchors.fill: parent
         id: mychartID

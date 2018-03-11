@@ -2,6 +2,8 @@
 #define STATIONMANAGER_H
 
 #include <QObject>
+#include <QStringListModel>
+#include <QQmlApplicationEngine>
 #include "propertyhelper.h"
 #include "httprequestworker.h"
 #include "station.h"
@@ -14,7 +16,7 @@ class StationManager : public QObject
     AUTO_PROPERTY(QTime, currentStationTime)
     AUTO_PROPERTY(QList<bool>, currentStationEnables)
 public:
-    explicit StationManager(QObject *parent = nullptr);
+    explicit StationManager(QQmlApplicationEngine * engine,QObject *parent = nullptr);
     Q_INVOKABLE void updateStation(quint8 id,QString name, quint8 hour, quint8 minute, quint8 second,
                                    bool temp, bool hum, bool lux,bool soil, bool bat, bool co2);
     Q_INVOKABLE void addStation(quint8 id,QString name, quint8 hour, quint8 minute, quint8 second,
@@ -22,6 +24,7 @@ public:
     Q_INVOKABLE void removeCurrentStation();
     void setCurrentStation(int index);
     Q_INVOKABLE void retrieveStations();
+    QStringListModel *stationsStrings;
 signals:
     void updateFailed(QString reason);
     void updateSucceed();
@@ -36,7 +39,9 @@ public slots:
     void handleRemoveCurrentStationResult(HttpRequestWorker*);
     void handleAddStationResult(HttpRequestWorker*);
 private:
+    QString getMessageString(HttpRequestWorker *worker);
     Station currentStation_;
+    QQmlApplicationEngine * engine;
     Station tempStation_;
     QList<Station> realStations_;
 };

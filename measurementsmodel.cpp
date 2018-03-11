@@ -27,11 +27,6 @@ void MeasurementsModel::getDataHelper(DateRange period) {
     input.add_var("station",QString::number(station_));
     connect(worker,SIGNAL(on_execution_finished(HttpRequestWorker*)),this, SLOT(handleTodayData(HttpRequestWorker*)));
     worker->execute(&input);
-    //QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
-    //auto axes = lineseries->attachedAxes();
-    //axes.at(1)->setTitleText(type_ + '['+Measurement::readingUnit(Measurement::StringToReading(type_))+']');
-    //QDateTimeAxis *dt = static_cast<QDateTimeAxis*>(axes.at(0));
-    //dt->setFormat("yy-MM-dd");
 }
 void MeasurementsModel::getTodayData(int station, QString readingtype)
 {
@@ -106,25 +101,9 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
         auto tmp = type_;
         tmp[0] = tmp[0].toUpper();
         cType(tmp);
-        /*find smallest and biggest date*/
-
-        //QLineSeries *lineseries = static_cast<QLineSeries *>(series_);
-        //auto axes = lineseries->attachedAxes();
-          //  axes.at(0)->setMin(QDateTime::fromMSecsSinceEpoch(min->x()).addDays(-1));
-            //axes.at(0)->setMax(QDateTime::fromMSecsSinceEpoch(max->x()).addDays(1));
-        /*find smallest and biggest measurement*/
-
-
         QObject *chart = engine_.rootObjects().first()->findChild<QObject*>("mychartObject");
         QMetaObject::invokeMethod(chart,"updater");
-//        if(miny->y()<0)
-//            axes.at(1)->setMin(miny->y()-20);
-//        else
-//            axes.at(1)->setMin(0);
-//        axes.at(1)->setMax(maxy->y()+20);
-//        lineseries->replace(data_);
-
-
     }
+    worker->deleteLater();
 }
 

@@ -6,6 +6,37 @@ Item {
     width: rootID.width
     Background {anchors.fill: parent}
     Component.onCompleted: StationManager.retrieveStations()
+    Connections {
+        target: StationManager
+        onRemoveFailed: {
+            messageDialog.text = reason
+            messageDialog.visible = true;
+        }
+        onRemoveSucceed: {
+            messageDialog.text = "Remove succeeded!"
+            messageDialog.visible = true
+
+        }
+        onAddFailed: {
+            messageDialog.text = reason
+            messageDialog.visible = true;
+
+        }
+        onAddSucceed: {
+            messageDialog.text = "Add succeeded!"
+            messageDialog.visible = true
+        }
+        onUpdateFailed: {
+            messageDialog.text = reason
+            messageDialog.visible = true;
+        }
+
+        onUpdateSucceed: {
+            messageDialog.text = "Update succeeded!"
+            messageDialog.visible = true
+        }
+    }
+
     Flickable {
         id: flick
         clip: true;
@@ -28,8 +59,16 @@ Item {
         Menu {
             id: contextMenu
             y: plButton.height
-            MenuItem {text: "Add"}
-            MenuItem{text: "Remove"}
+            MenuItem {
+                text: "Add"
+                onTriggered:StationManager.addStation(idField.text,nameField.text,hourField.text,minuteField.text,secondField.text,tempCheckBox.checked,
+                                                         humidityCheckBox.checked,luxCheckBox.checked,soilCheckBox.checked,batteryCheckBox.checked,
+                                                         co2ChecBox.checked)
+            }
+            MenuItem{
+                text: "Remove"
+                onTriggered: StationManager.removeCurrentStation()
+            }
         }
 
         MessageDialog {
@@ -53,7 +92,8 @@ Item {
                     Layout.preferredWidth: parent.width*0.8
                     Layout.maximumWidth: parent.width*0.9
                     opacity: 0.5
-                    model: Interact.stations
+                    model: StationManager.stations
+                    //textRole: "display"
                     onCurrentIndexChanged: StationManager.onStationChanged(currentIndex)
                 }
 
@@ -97,18 +137,21 @@ Item {
                 clip: true
                 Label {text: "H:"}
                 TextField {
+                    id: hourField
                     Layout.maximumWidth: flick.width/4
                     text: StationManager.currentStationTime.getHours()
 
                 }
                 Label {text: "M:"}
                 TextField {
+                    id: minuteField
                     Layout.maximumWidth: flick.width/4
                     text: StationManager.currentStationTime.getMinutes()
 
                 }
                 Label {text: "S:"}
                 TextField {
+                     id: secondField
                      Layout.maximumWidth: flick.width/4
                      text: StationManager.currentStationTime.getSeconds()
 
@@ -147,7 +190,7 @@ Item {
             }
             CheckBox {
                 text: "Soil"
-                id: soildCheckBox
+                id: soilCheckBox
                 indicator.width: idField.height
                 indicator.height: idField.height
                 checked: StationManager.currentStationEnables[3]
@@ -179,8 +222,9 @@ Item {
                     id: registerButton
                     text: "Save"
                     onClicked: {
-                        messageDialog.visible = true
-                        loaderID.source = "MainView.qml"
+                        StationManager.updateStation(idField.text,nameField.text,hourField.text,minuteField.text,secondField.text,tempCheckBox.checked,
+                                                     humidityCheckBox.checked,luxCheckBox.checked,soilCheckBox.checked,batteryCheckBox.checked,
+                                                     co2ChecBox.checked)
                     }
                 }
                 Button {
