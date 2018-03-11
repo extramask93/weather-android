@@ -34,6 +34,9 @@ int main(int argc, char *argv[])
 
     StationManager stationManager(&engine,nullptr);
     root_context->setContextProperty("StationManager", &stationManager);
+
+    RegisterModel regModel(nullptr);
+    root_context->setContextProperty("RegisterModel", &regModel);
     /*-----------------------------*/
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

@@ -5,7 +5,16 @@ import QtQuick.Dialogs 1.2
 Item {
     width: rootID.width
     Background {anchors.fill: parent}
+    focus: true
     Component.onCompleted: StationManager.retrieveStations()
+    Keys.onBackPressed: {
+        loaderID.source = "MainView.qml";
+        event.accepted = true;
+    }
+    Keys.onEscapePressed: {
+        loaderID.source = "MainView.qml"
+        event.accepted = true;
+    }
     Connections {
         target: StationManager
         onRemoveFailed: {
@@ -38,27 +47,25 @@ Item {
     }
 
     Flickable {
+        Keys.onBackPressed: {
+            loaderID.source = "MainView.qml";
+            event.accepted = true;
+        }
+        Keys.onEscapePressed: {
+            loaderID.source = "MainView.qml"
+            event.accepted = true;
+        }
         id: flick
         clip: true;
         anchors.fill: parent; // use a flickable to allow scrolling
         contentWidth: parent.width; // flickable content width is its own width, scroll only vertically
         contentHeight: layout.height; // content height is the height of the layout of items
-        Button {
-            Layout.alignment: Qt.AlignRight
-            opacity: 0.5
-            width: (rootID.height*0.10)
-            height: width
-            anchors.left: parent.left
-            anchors.top: parent.top
-            text: "+"
-            id: plButton
-            onClicked:  {
-                contextMenu.open()
-            }
-        }
+
         Menu {
             id: contextMenu
             y: plButton.height
+            width: rootID.width/3
+            spacing: 10
             MenuItem {
                 text: "Add"
                 onTriggered:StationManager.addStation(idField.text,nameField.text,hourField.text,minuteField.text,secondField.text,tempCheckBox.checked,
@@ -84,20 +91,38 @@ Item {
             id: layout
             width: parent.width
             anchors.centerIn: parent
-            spacing: 15
+            spacing: 5
             anchors.horizontalCenter: parent.horizontalCenter
+            RowLayout {
+                Layout.preferredWidth: parent.width
+                Layout.alignment: Qt.AlignHCenter
+                spacing: 10
+                Button {
+                    Layout.alignment: Qt.AlignLeft
+                    opacity: 0.5
+                    Layout.preferredHeight: idField.height*3
+                    Layout.preferredWidth: idField.height*3
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    text: "+"
+                    id: plButton
+                    onClicked:  {
+                        contextMenu.open()
+                    }
+                }
                 ComboBox {
                     id: cbox
                     Layout.alignment: Qt.AlignRight
+                    anchors.top: parent.top
+                    Layout.preferredHeight: idField.height*1.5
                     Layout.preferredWidth: parent.width*0.8
-                    Layout.maximumWidth: parent.width*0.9
                     opacity: 0.5
                     model: StationManager.stations
                     //textRole: "display"
                     onCurrentIndexChanged: StationManager.onStationChanged(currentIndex)
                 }
-
-            Label {
+            }
+            CLabel {
                 topPadding: 15
                 text: "ID:"
                 id: idLabel
@@ -111,7 +136,7 @@ Item {
                     placeholderText: "id"
                     text: StationManager.currentStationID
             }
-            Label {
+            CLabel {
                 topPadding: 15
                 text: "Name:"
                 id: nameLabel
@@ -125,8 +150,7 @@ Item {
                 placeholderText: "station name"
                 text: StationManager.currentStationName
             }
-            Label {
-                font.pointSize: 14
+            CLabel {
                 Layout.margins: 10
                 text: "Refresh Time: "
             }
@@ -135,21 +159,21 @@ Item {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
                 clip: true
-                Label {text: "H:"}
+                CLabel {text: "H:"}
                 TextField {
                     id: hourField
                     Layout.maximumWidth: flick.width/4
                     text: StationManager.currentStationTime.getHours()
 
                 }
-                Label {text: "M:"}
+                CLabel {text: "M:"}
                 TextField {
                     id: minuteField
                     Layout.maximumWidth: flick.width/4
                     text: StationManager.currentStationTime.getMinutes()
 
                 }
-                Label {text: "S:"}
+                CLabel {text: "S:"}
                 TextField {
                      id: secondField
                      Layout.maximumWidth: flick.width/4
@@ -158,37 +182,40 @@ Item {
                 }
             }
 
-            Label {
-                font.pointSize: 14
+            CLabel {
                 Layout.margins: 10
                 text: "Active sensors: "
             }
 
-            CheckBox {
+            CCheckBox {
+                Layout.leftMargin: 10
                 text: "Temperature"
                 id: tempCheckBox
-                indicator.width: idField.height
-                indicator.height: idField.height
+                //indicator.width: idField.height
+                //indicator.height: idField.height
                 checked: StationManager.currentStationEnables[0]
 
             }
-            CheckBox {
+            CCheckBox {
+                Layout.leftMargin: 10
                 text: "Humidty"
                 id: humidityCheckBox
-                indicator.width: idField.height
-                indicator.height: idField.height
+                //indicator.width: idField.height
+                //indicator.height: idField.height
                 checked: StationManager.currentStationEnables[1]
 
             }
-            CheckBox {
+            CCheckBox {
+                Layout.leftMargin: 10
                 text: "Lux"
                 id: luxCheckBox
-                indicator.width: idField.height
-                indicator.height: idField.height
+                //indicator.width: idField.height
+                //indicator.height: idField.height
                 checked: StationManager.currentStationEnables[2]
 
             }
-            CheckBox {
+            CCheckBox {
+                Layout.leftMargin: 10
                 text: "Soil"
                 id: soilCheckBox
                 indicator.width: idField.height
@@ -196,19 +223,21 @@ Item {
                 checked: StationManager.currentStationEnables[3]
 
             }
-            CheckBox {
+            CCheckBox {
+                Layout.leftMargin: 10
                 text: "Battery"
                 id: batteryCheckBox
-                indicator.width: idField.height
-                indicator.height: idField.height
+                //indicator.width: idField.height
+                //indicator.height: idField.height
                 checked: StationManager.currentStationEnables[4]
 
             }
-            CheckBox {
+            CCheckBox {
+                Layout.leftMargin: 10
                 text: "CO2"
                 id: co2ChecBox
-                indicator.width: idField.height
-                indicator.height: idField.height
+                //indicator.width: idField.height
+                //indicator.height: idField.height
                 checked: StationManager.currentStationEnables[5]
             }
 
@@ -216,8 +245,7 @@ Item {
                 Layout.fillWidth: true
                 spacing: 16
                 anchors.horizontalCenter: parent.horizontalCenter
-                Button {
-                    height: idField.height
+                CButton {
                     Layout.alignment: Qt.AlignRight
                     id: registerButton
                     text: "Save"
@@ -227,9 +255,9 @@ Item {
                                                      co2ChecBox.checked)
                     }
                 }
-                Button {
-                    height: idField.height
+                CButton {
                     Layout.alignment: Qt.AlignRight
+
                     id: cancelButton
                     text: "Cancel"
                     onClicked: {

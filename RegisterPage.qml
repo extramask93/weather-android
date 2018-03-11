@@ -2,8 +2,8 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
-import com.registration 1.0
 Item {
+    focus: true
     Background {anchors.fill: parent}
     BusyIndicator {
         id: busy
@@ -13,10 +13,10 @@ Item {
         height: parent.width/4
         z: 20
     }
-    RegisterModel {
-        id: model
-        onRegistrationFailed: {messageDialog.text = reason;messageDialog.visible = true; busy.running = false}
-        onRegistrationSuccess: {messageDialog.text = "Registration Succeed"; messageDialog,visible = true; busy.running = false;}
+    Connections {
+        target: RegisterModel
+        onRegistrationFailed: {messageDialog.text = reason;busy.running = false; messageDialog.visible = true; }
+        onRegistrationSuccess: {messageDialog.text = "Registration Succeed";  busy.running = false;messageDialog.visible = true;}
     }
 
     Flickable {
@@ -31,6 +31,7 @@ Item {
             visible: false
             onAccepted: {
                 visible = false;
+                registerButton.enabled = true
             }
         }
         ColumnLayout {
@@ -39,7 +40,7 @@ Item {
             anchors.centerIn: parent
             spacing: 15
             anchors.horizontalCenter: parent.horizontalCenter
-            Label {
+            CLabel {
                 topPadding: 15
                 text: "Username:"
                 id: usernameLab
@@ -53,7 +54,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 placeholderText: "username"
             }
-            Label {
+            CLabel {
                 text: "Email:"
                 id:emailLab
                 Layout.preferredWidth: parent.width-20
@@ -66,7 +67,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 placeholderText: "email"
             }
-            Label {
+            CLabel {
                 text: "Password:"
 
                 id: passwordLab
@@ -81,7 +82,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 placeholderText: "passsword"
             }
-            Label {
+            CLabel {
                 text: "Repeat the password:"
                 Layout.preferredWidth: parent.width-20
                 Layout.alignment: Qt.AlignHCenter
@@ -95,7 +96,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 placeholderText: "password"
             }
-            Label {
+            CLabel {
                 text: "Phone number:"
                 Layout.preferredWidth: parent.width-20
                 Layout.alignment: Qt.AlignHCenter
@@ -112,7 +113,7 @@ Item {
                 Layout.fillWidth: true
                 spacing: 16
                 anchors.horizontalCenter: parent.horizontalCenter
-                Button {
+                CButton {
                     height: username.height
                     Layout.preferredWidth: username.width/4
                     Layout.alignment: Qt.AlignRight
@@ -122,7 +123,7 @@ Item {
                         staticValidate();
                     }
                 }
-                Button {
+                CButton {
                     height: username.height
                     Layout.preferredWidth: username.width/4
                     Layout.alignment: Qt.AlignRight
@@ -149,6 +150,14 @@ Item {
         }
         busy.running = true
         registerButton.enabled = false
-        model.registerUser(username.text,email.text,password.text,phoneNr.text);
+        RegisterModel.registerUser(username.text,email.text,password.text,phoneNr.text);
+    }
+    Keys.onBackPressed: {
+        loaderID.source = "LoginScreen.qml"
+        event.accepted = true;
+    }
+    Keys.onEscapePressed: {
+        loaderID.source = "LoginScreen.qml"
+        event.accepted =true;
     }
 }

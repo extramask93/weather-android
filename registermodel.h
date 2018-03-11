@@ -12,8 +12,8 @@ public:
     Q_INVOKABLE void registerUser(QString name, QString email, QString password, QString phone);
 
 signals:
-    Q_SIGNAL void registrationFailed(QString reason);
-    Q_SIGNAL void registrationSuccess();
+    void registrationFailed(QString reason);
+    void registrationSuccess();
 public slots:
     void HandleResult(HttpRequestWorker *);
 };

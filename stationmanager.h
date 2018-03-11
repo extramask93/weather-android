@@ -25,6 +25,7 @@ public:
     void setCurrentStation(int index);
     Q_INVOKABLE void retrieveStations();
     QStringListModel *stationsStrings;
+    static QString getMessageString(HttpRequestWorker *worker);
 signals:
     void updateFailed(QString reason);
     void updateSucceed();
@@ -39,7 +40,7 @@ public slots:
     void handleRemoveCurrentStationResult(HttpRequestWorker*);
     void handleAddStationResult(HttpRequestWorker*);
 private:
-    QString getMessageString(HttpRequestWorker *worker);
+
     Station currentStation_;
     QQmlApplicationEngine * engine;
     Station tempStation_;

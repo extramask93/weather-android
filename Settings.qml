@@ -4,12 +4,13 @@ import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 Item {
     id: settingsPage
+    focus: true
     Background {anchors.fill: parent}
     ColumnLayout {
         width: parent.width
         anchors.centerIn: parent
         spacing: 16
-        Label {
+        CLabel {
             text: "IP:"
             Layout.alignment: Qt.AlignHCenter
         }
@@ -18,9 +19,8 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             id: ipFieldID
             text: SettingsManager.getSetting("Server","ip")
-            focus: true
         }
-        Label {
+        CLabel {
             Layout.alignment: Qt.AlignHCenter
             text: "Port:"
         }
@@ -33,7 +33,7 @@ Item {
             Layout.fillWidth: true
             spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
-            Button {
+            CButton {
                 height: ipFieldID.height
                 Layout.preferredWidth: ipFieldID.width/4
                 Layout.alignment: Qt.AlignLeft
@@ -47,7 +47,7 @@ Item {
                     loaderID.source = "LoginScreen.qml"
                 }
             }
-            Button {
+            CButton {
                 height: ipFieldID.height
                 Layout.preferredWidth: ipFieldID.width/4
                 Layout.alignment: Qt.AlignRight
@@ -56,4 +56,12 @@ Item {
             }
         }
 }
+    Keys.onBackPressed: {
+        loaderID.source = "LoginScreen.qml"
+        event.accepted = true;
+    }
+    Keys.onEscapePressed: {
+        loaderID.source = "LoginScreen.qml"
+        event.accepted =true;
+    }
 }

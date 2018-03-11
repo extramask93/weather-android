@@ -50,12 +50,12 @@ Interact::~Interact()
     measurementList_.clear();
 }
 
-Interact::pauseTimer()
+void Interact::pauseTimer()
 {
     timer->stop();
 }
 
-Interact::startTimer()
+void Interact::startTimer()
 {
     timer->start(3600);
 }
@@ -157,16 +157,9 @@ void Interact::updateDailyJSON()
     worker->execute(&input);
 }
 
-void Interact::onStationChanged(int /*index*/)
+void Interact::onStationChanged(int index)
 {
-    QObject* scombobox = engine_.rootObjects().first()->findChild<QObject*>("stationBoxObject");
-    if(scombobox==nullptr)
-        return;
-    auto currentText = scombobox->property("currentText").toString();
-    auto it = std::find_if(stations_.begin(),stations_.end(),[=](auto val){if(val.name==currentText) return true; else return false;});
-    if(it!= stations_.end()){
-        currentStation = *it;
-    }
+    currentStation = stations_[index];
     updateDailyJSON();
 }
 void Interact::updateMeasurements(HttpRequestWorker *worker) {

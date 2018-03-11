@@ -13,7 +13,16 @@ Window {
             loaderID.source = "LoginScreen.qml"
         }
     }
-
+    Keys.onBackPressed: {
+        optionsID.x = -optionsID.width
+        active = false
+        event.accepted = false;
+    }
+    Keys.onEscapePressed: {
+        optionsID.x = -optionsID.width
+        active = false
+        event.accepted = false;
+    }
     id: rootID
     visible: true
     width: 400//Screen.width
@@ -24,7 +33,7 @@ Window {
     property int nrOfVerticalTiles: 8
     property int tileWidth: rootID.width/nrOfHorizontalTiles
     property int tileHeight: rootID.height/nrOfVerticalTiles
-    property int widthOfSeizure: 5
+    property int widthOfSeizure: 10
      property int durationOfMenuAnimation: 500
 
     Rectangle {
@@ -33,6 +42,7 @@ Window {
         width: parent.width
     Loader {
         id: loaderID
+        focus: true
         objectName: "loaderObject"
         anchors.fill: parent
         height: parent.height-(parent.height*0.10)
@@ -40,14 +50,11 @@ Window {
     }
     SidePanel {
         id: optionsID
+        x: -parent.width/2
         width: parent.width/2
-        x: -optionsID.width
         height: parent.height
         property bool active: false
         Behavior on x { NumberAnimation { duration: durationOfMenuAnimation; easing.type: Easing.OutQuad } }
-        onXChanged: {
-          //menuProgressOpening = (1-Math.abs(optionsID.x/optionsID.width))
-        }
         MouseArea {
           anchors.right: parent.right
           anchors.rightMargin: optionsID.active ? (optionsID.width - rootID.width) : -widthOfSeizure
@@ -66,8 +73,10 @@ Window {
           onReleased: {
             if( Math.abs(optionsID.x) > 0.5*optionsID.width ) {
               optionsID.x = -optionsID.width //close the menu
+              optionsID.active = false
             } else {
               optionsID.x = 0 //fully opened
+              optionsID.active = true
             }
           }
         }
@@ -81,9 +90,10 @@ Window {
         width: parent.width
         z:5
     }
-
     function onMenu() {
         optionsID.x = optionsID.active ? -optionsID.width:0
         optionsID.active = !optionsID.active
+        if(optionsID.active)
+            optionsID.focus = true;
     }
 }

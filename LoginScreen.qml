@@ -1,8 +1,11 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
+import QtQuick.Controls.Styles 1.4
 
 Item {
+    focus: true
+    Component.onCompleted: { optionsID.logOutButton.enabled = false; optionsID.stationSettingsButton.enabled = false}
     Timer {
         id: timer
         interval: 3500
@@ -38,7 +41,7 @@ Item {
         anchors.centerIn: parent
         spacing: 15
         anchors.horizontalCenter: parent.horizontalCenter
-            Label {
+            CLabel {
                 text: "Username";
                 color: "black";
                 Layout.alignment: Qt.AlignHCenter
@@ -48,11 +51,10 @@ Item {
                 Layout.preferredWidth: parent.width-20
                 Layout.alignment: Qt.AlignHCenter
                 objectName: "userTextField"
-                focus: true
                 text: LoginHandler.login
                 placeholderText: "user"
             }
-            Label {
+            CLabel {
                 Layout.alignment: Qt.AlignHCenter
                 text:"Password";
                 color: "black";
@@ -66,28 +68,23 @@ Item {
                 echoMode: TextInput.Password
                 placeholderText: "password"
             }
-            Label {
+            CLabel {
                 Layout.alignment: Qt.AlignHCenter
                 id: infoLabelID
                 text: ""
                 color: "red"
             }
-            CheckBox {
-                //Layout.alignment: Qt.AlignLeft
-                //Layout.preferredHeight:userNameID.height
-                //Layout.preferredWidth: userNameID.width/2
+            CCheckBox {
                 id : rememberCheckBox
                 checked: LoginHandler.rememberMe
                 objectName: "rememberCheckBox"
                 text: "Remember me"
-                indicator.width: userNameID.height
-                indicator.height: userNameID.height
-            }
+                }
         RowLayout {
             Layout.fillWidth: true
             spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
-            Button {
+            CButton {
                 id: loginButton
                 text: "Login"
                 height: userNameID.height
@@ -105,7 +102,7 @@ Item {
                     LoginHandler.Login(userNameID.text,passwordID.text)
                 }
             }
-            Button {
+            CButton {
                 id: settingsButton
                 height: userNameID.height
                 Layout.preferredWidth: userNameID.width/4
@@ -125,13 +122,39 @@ Item {
                 loaderID.source = "RegisterPage.qml"
             }
         }
-        BusyIndicator {
-            id: busy
-            running: false
-            Layout.preferredHeight: userNameID.height*2
-            Layout.preferredWidth: height*2
-            Layout.alignment: Qt.AlignHCenter
-            z: 20
+
+    }
+    Keys.onBackPressed: {
+        Qt.quit();
+        event.accepted = true;
+    }
+    Keys.onEscapePressed: {
+        Qt.quit();
+        event.accepted =true;
+    }
+    BusyIndicator {
+        id: busy
+        running: false
+        anchors.centerIn: parent
+        width: parent.width/2
+        height: width
+        //Layout.preferredHeight: userNameID.height*2
+        //Layout.preferredWidth: height
+        //Layout.alignment: Qt.AlignHCenter
+        z: 20
+        contentItem:Image {
+            id: img
+            visible: busy.running
+            anchors.centerIn: parent
+            source: "Images/sunflower.png"
+            RotationAnimator {
+                target: img
+                running: busy.visible && busy.running
+                from: 0
+                to: 360
+                loops: Animation.Infinite
+                duration: 2000
+            }
         }
     }
 }

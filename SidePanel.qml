@@ -4,6 +4,8 @@ import QtQuick.Layouts 1.1
 
 Item {
     objectName: "sidePanelObject"
+    property alias logOutButton: logoutButton
+    property alias stationSettingsButton: stationSettingsButton_
     id: sidePanel
     signal logOutSignal();
     Rectangle {
@@ -16,23 +18,25 @@ Item {
             Column {
                 anchors.centerIn: parent
                 spacing: 16
-                Button {
+                CButton {
+                    id: stationSettingsButton_
                     text: "Station Settings"
-                    enabled: true
+                    enabled: false
                     onClicked: {
                         loaderID.source = "StationSettingsPage.qml"
                     }
                 }
-                Button {
+                CButton {
                     text: "Help"
                 }
-                Button {
+                CButton {
                     text: "About"
                 }
-                Button {
+                CButton {
+                    id: logoutButton
                     text: "Logout"
                     enabled: false
-                    onClicked:{ logOutSignal();
+                    onClicked:{ loaderID.source = "LoginScreen.qml" ;logOutSignal();
                     }
                 }
             }

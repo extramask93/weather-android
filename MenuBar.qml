@@ -15,7 +15,8 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         width: height
         height: parent.height
-        scale: maMenuBar.pressed ? 1.2 : 1
+        scale: maMenuBar.pressed ? 1 : 0.7
+        rotation: maMenuBar.pressed ? 0:30
         color: "transparent"
         MouseArea {
           id: maMenuBar
@@ -24,7 +25,7 @@ Item {
         }
         Image {
             anchors.fill: parent
-            source: "/Images/more.png"
+            source: "/Images/icon.png"
         }
         clip: true
       }

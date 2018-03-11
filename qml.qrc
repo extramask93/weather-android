@@ -24,10 +24,16 @@
         <file>Images/battery(50).png</file>
         <file>Images/battery(30).png</file>
         <file>Images/ground.jpg</file>
-		<file>Images/icon.png</file>
+        <file>Images/icon.png</file>
+        <file>Images/tomato.png</file>
+        <file>Images/broccoli.png</file>
+		<file>Images/sunflower.png</file>
         <file>Chart.qml</file>
         <file>config.js</file>
         <file>RegisterPage.qml</file>
         <file>StationSettingsPage.qml</file>
+        <file>CButton.qml</file>
+        <file>CCheckBox.qml</file>
+        <file>CLabel.qml</file>
     </qresource>
 </RCC>

@@ -9,7 +9,7 @@ Item {
     signal loaded()
     objectName: "mainViewObject"
     Background {id:background}
-    Component.onCompleted: Interact.onMainViewLoaded()
+    Component.onCompleted: { Interact.onMainViewLoaded(); optionsID.logOutButton.enabled = true; optionsID.stationSettingsButton.enabled = true}
     Component.onDestruction: Interact.pauseTimer()
     ComboBox {
             objectName: "stationBoxObject"
@@ -19,6 +19,7 @@ Item {
             opacity: 0.5
             spacing: 4
             model: Interact.stations
+            onAccepted: Interact.onStationChanged(currentIndex)
     }
 
     MyChart{
@@ -52,7 +53,7 @@ Item {
         imHeight: tileHeight
         imSource: "/Images/sun.png"
         x: (nrOfHorizontalTiles-1)*tileWidth
-        y: 0
+        y: tileHeight
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
                 Interact.onUpdateChartSignal("lux",mychartID.periodBox.currentIndex)
@@ -83,7 +84,7 @@ Item {
         imHeight: tileHeight
         imSource: getIcon()
         x: (nrOfHorizontalTiles-1)*tileWidth
-        y: tileHeight
+        y: tileHeight*2
         mouseArea.onClicked: {
                 mychartID.visible = !mychartID.visible
                 Interact.onUpdateChartSignal("battery",mychartID.periodBox.currentIndex)
@@ -154,19 +155,4 @@ Item {
             mychartID.visible=false;
             event.accepted = true;}
     }
-
-    function getData() {
-        var xhr = new XMLHttpRequest;
-        console.log("getdata")
-        xhr.open("GET","http://localhost:5000/GetDaily?station=1&date1=17-12-26&date2=18-01-13");
-        xhr.send(null);
-        xhr.onreadystatechange = function() {
-            if(xhr.readyState == XMLHttpRequest.DONE) {
-                var a = JSON.parse(xhr.responseText)
-                parseData(a);
-            }
-        }
-    }
-    function parseData(data) {
-        }
 }
