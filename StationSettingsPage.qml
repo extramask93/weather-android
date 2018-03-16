@@ -97,11 +97,11 @@ Item {
                 Layout.preferredWidth: parent.width
                 Layout.alignment: Qt.AlignHCenter
                 spacing: 10
-                Button {
+                TomatoButton {
                     Layout.alignment: Qt.AlignLeft
                     opacity: 0.5
-                    Layout.preferredHeight: idField.height*3
-                    Layout.preferredWidth: idField.height*3
+                    Layout.preferredHeight: idField.height*2
+                    Layout.preferredWidth: idField.height*2
                     anchors.left: parent.left
                     anchors.top: parent.top
                     text: "+"

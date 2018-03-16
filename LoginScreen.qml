@@ -75,6 +75,7 @@ Item {
                 color: "red"
             }
             CCheckBox {
+                Layout.leftMargin: 10
                 id : rememberCheckBox
                 checked: LoginHandler.rememberMe
                 objectName: "rememberCheckBox"
@@ -132,29 +133,29 @@ Item {
         Qt.quit();
         event.accepted =true;
     }
-    BusyIndicator {
+    CBusy {
         id: busy
         running: false
         anchors.centerIn: parent
-        width: parent.width/2
-        height: width
+        width: parent.width
+        height: parent.height
         //Layout.preferredHeight: userNameID.height*2
         //Layout.preferredWidth: height
         //Layout.alignment: Qt.AlignHCenter
-        z: 20
-        contentItem:Image {
-            id: img
-            visible: busy.running
-            anchors.centerIn: parent
-            source: "Images/sunflower.png"
-            RotationAnimator {
-                target: img
-                running: busy.visible && busy.running
-                from: 0
-                to: 360
-                loops: Animation.Infinite
-                duration: 2000
-            }
-        }
+//        z: 20
+//        contentItem:Image {
+//            id: img
+//            visible: busy.running
+//            anchors.centerIn: parent
+//            source: "Images/sunflower.png"
+//            RotationAnimator {
+//                target: img
+//                running: busy.visible && busy.running
+//                from: 0
+//                to: 360
+//                loops: Animation.Infinite
+//                duration: 2000
+//            }
+//        }
     }
 }

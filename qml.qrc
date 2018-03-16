@@ -27,7 +27,7 @@
         <file>Images/icon.png</file>
         <file>Images/tomato.png</file>
         <file>Images/broccoli.png</file>
-		<file>Images/sunflower.png</file>
+        <file>Images/sunflower.png</file>
         <file>Chart.qml</file>
         <file>config.js</file>
         <file>RegisterPage.qml</file>
@@ -35,5 +35,7 @@
         <file>CButton.qml</file>
         <file>CCheckBox.qml</file>
         <file>CLabel.qml</file>
+        <file>CBusy.qml</file>
+        <file>TomatoButton.qml</file>
     </qresource>
 </RCC>

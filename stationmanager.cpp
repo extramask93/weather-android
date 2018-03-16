@@ -49,7 +49,7 @@ void StationManager::addStation(quint8 id, QString name, quint8 hour, quint8 min
     HttpRequestInput input(url,"POST");
     input.add_var("StationID",QString::number(tempStation_.id));
     input.add_var("Name",tempStation_.name);
-    input.add_var("refTime",tempStation_.reftime.toString("hh:mm:ss"));
+    input.add_var("refTime",QString::number(QTime(0,0,0).secsTo(tempStation_.reftime)));
     auto list = tempStation_.getBool();
     QString tempstr = "";
     for(auto element:list) {
@@ -122,7 +122,8 @@ void StationManager::handleRetrieveStationsResult(HttpRequestWorker *worker)
              refTime = v.toObject().value("refTime").toString();
              list.append(stationName);
              Station tempStation(stationNumber,stationName,std::bitset<6>(enableSettings.toStdString()));
-             auto tim = QTime::fromString(refTime,"H:mm:ss");
+             auto secs = refTime.toInt();
+             auto tim = QTime(0,0,0).addSecs(secs);
              tempStation.reftime = tim;
              realStations_.append(tempStation);
 
