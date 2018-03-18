@@ -27,7 +27,7 @@ void StationManager::updateStation(quint8 id, QString name, quint8 hour, quint8 
     HttpRequestInput input(url,"POST");
     input.add_var("StationID",QString::number(tempStation_.id));
     input.add_var("Name",tempStation_.name);
-    input.add_var("refTime",tempStation_.reftime.toString("hh:mm:ss"));
+    input.add_var("refTime",QString::number(QTime(0,0,0).secsTo(tempStation_.reftime)));
     auto list = tempStation_.getBool();
     QString tempstr = "";
     for(auto element:list) {
@@ -75,7 +75,7 @@ void StationManager::removeCurrentStation()
 void StationManager::setCurrentStation(int index)
 {
     if(index<0 || index >=realStations_.length())
-        return;
+        index =0;
     currentStation_ = realStations_[index];
     currentStationID(currentStation_.id);
     currentStationName(currentStation_.name);
@@ -129,9 +129,10 @@ void StationManager::handleRetrieveStationsResult(HttpRequestWorker *worker)
 
         }
         stationsStrings->setStringList(list);
-        //engine->rootContext()->setContextProperty("StationsStrings",stationsStrings);
+        QObject *box = engine->rootObjects().first()->findChild<QObject*>("stComboBox");
+        auto index = box->property("currentIndex").toInt();
         stations(list);
-        onStationChanged(0);
+        onStationChanged(index);
     }
     worker->deleteLater();
 }

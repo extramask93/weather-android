@@ -6,7 +6,7 @@ function config2() {
         labels: [],
         datasets: [{
                 label: 'temperature',
-                fontSize: 20,
+                fontSize: 10,
                 backgroundColor: color("red").alpha(0.5).rgbString(),
                 borderColor: "red",
                 pointRadius:10,
@@ -30,21 +30,23 @@ function config2() {
                yAxes: [{
                  scaleLabel: {
                    display: true,
-                   fontSize:50,
+                   fontSize:15,
+                   fontStyle: "bold",
                    fontColor: "#000",
                    labelString: Model.cType+' ['+Model.unit+']'
                  },
-                 ticks: { fontSize: 50,fontColor: "#000",},
+                 ticks: { fontStyle: "bold",fontSize: 10,fontColor: "#000",},
 
                }],
                 xAxes: [{
                   scaleLabel: {
                     display: true,
-                    fontSize:50,
+                    fontSize:15,
+                    fontStyle: "bold",
                     fontColor: "#000",
                     labelString: 'date'
                   },
-                  ticks: {fontSize:50,fontColor: "#000",autoSkip: true,
+                  ticks: {fontSize:10,fontColor: "#000",fontStyle: "bold",autoSkip: true,
                             maxTicksLimit: 4},
 
                 }]
@@ -54,9 +56,8 @@ function config2() {
                 display:false
             },
             title: {
-                display: true,
+                display: false,
                 text: Model.cType+" Chart",
-                fontSize: 50,
                 fontColor: "#000"
             }
         }

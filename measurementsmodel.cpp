@@ -17,14 +17,18 @@ MeasurementsModel::MeasurementsModel(QObject *parent,QAbstractSeries *series, QQ
     qRegisterMetaType<QAbstractSeries *>();
     qRegisterMetaType<QAbstractAxis *>();
 }
-void MeasurementsModel::getDataHelper(DateRange period) {
+void MeasurementsModel::getDataHelper(DateRange period, QString per) {
     QString url = "http://"+SettingsManager::getSetting("Server","ip").toString()+":"
-            +SettingsManager::getSetting("Server","port").toString()+"/GetDaily";
+            +SettingsManager::getSetting("Server","port").toString()+"/GetPeriodical";
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input(url,"GET");
-    input.add_var("date1",period.first.toString("yyyy-MM-dd"));
+    /*input.add_var("date1",period.first.toString("yyyy-MM-dd"));
     input.add_var("date2",period.second.toString("yyyy-MM-dd"));
-    input.add_var("station",QString::number(station_));
+    input.add_var("station",QString::number(station_));*/
+    input.add_var("type",type_);
+    input.add_var("station", QString::number(station_));
+    input.add_var("period",per);
+    input.add_var("interval","50");
     connect(worker,SIGNAL(on_execution_finished(HttpRequestWorker*)),this, SLOT(handleTodayData(HttpRequestWorker*)));
     worker->execute(&input);
 }
@@ -33,7 +37,7 @@ void MeasurementsModel::getTodayData(int station, QString readingtype)
     type_=readingtype;
     station_=station;
     auto period = Calendar::Last24Hour();
-    getDataHelper(period);
+    getDataHelper(period,"day");
     formatString_ = "hh:mm";
 
 }
@@ -43,7 +47,7 @@ void MeasurementsModel::getLast3DaysData(int station, QString readingtype)
     type_=readingtype;
     station_=station;
     auto period = Calendar::Last3Days();
-    getDataHelper(period);
+    getDataHelper(period,"3days");
     formatString_ = "dd-MM";
 }
 
@@ -52,7 +56,7 @@ void MeasurementsModel::getWeeklyData(int station, QString readingtype)
     type_=readingtype;
     station_=station;
     auto period = Calendar::LastWeek();
-    getDataHelper(period);
+    getDataHelper(period,"week");
     formatString_ = "dd-MM";
 }
 
@@ -61,7 +65,7 @@ void MeasurementsModel::getMonthlyData(int station, QString readingtype)
     type_=readingtype;
     station_=station;
     auto period = Calendar::LastMonth();
-    getDataHelper(period);
+    getDataHelper(period,"month");
     formatString_ = "dd-MM";
 }
 
@@ -70,7 +74,7 @@ void MeasurementsModel::getYearlyData(int station, QString readingtype)
     type_=readingtype;
     station_=station;
     auto period = Calendar::LastYear();
-    getDataHelper(period);
+    getDataHelper(period,"year");
     formatString_ = "dd-MM-yy";
 }
 
@@ -88,7 +92,7 @@ void MeasurementsModel::handleTodayData(HttpRequestWorker *worker)
         QStringList tempd;
         QList<qreal> tempv;
         foreach (const QJsonValue & v, jsonArray) {
-             auto date = v.toObject().value("measurementDate").toString();
+             auto date = v.toObject().value("time").toString();
              auto value = v.toObject().value(type_).toString();
              tempd.append(QDateTime::fromString(date,"yyyy-MM-dd hh:mm:ss").toString(formatString_));
              tempv.append(value.toFloat());

@@ -16,7 +16,7 @@ Item {
             objectName: "periodBoxObject"
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width*0.8
-            height: 100
+            height: 40
             opacity: 0.5
             model: ["Today", "3 days","Week", "Month","Year"]
             onActivated: {
@@ -31,6 +31,7 @@ Item {
         height: parent.height-periodBox.height
         width: parent.width
         anchors.top: periodBox.bottom
+        anchors.bottomMargin: 40
         onLoaded: {
             if(currentConfig != null) {
             chartID.item.chartData = currentConfig.data

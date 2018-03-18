@@ -13,6 +13,7 @@
 #include "station.h"
 int main(int argc, char *argv[])
 {
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
     auto icon  = QIcon("C:Users\\LENOVO\\Documents\\hello\\Images\\icon.png");
     QQmlApplicationEngine engine;

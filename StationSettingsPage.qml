@@ -112,10 +112,11 @@ Item {
                 }
                 ComboBox {
                     id: cbox
+                    objectName: "stComboBox"
                     Layout.alignment: Qt.AlignRight
                     anchors.top: parent.top
                     Layout.preferredHeight: idField.height*1.5
-                    Layout.preferredWidth: parent.width*0.8
+                    Layout.preferredWidth: parent.width*0.7
                     opacity: 0.5
                     model: StationManager.stations
                     //textRole: "display"
@@ -245,6 +246,7 @@ Item {
                 Layout.fillWidth: true
                 spacing: 16
                 anchors.horizontalCenter: parent.horizontalCenter
+                Layout.bottomMargin: 25
                 CButton {
                     Layout.alignment: Qt.AlignRight
                     id: registerButton

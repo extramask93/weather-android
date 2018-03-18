@@ -1,7 +1,7 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Controls.Styles 1.4
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
 import QtQml 2.2
 Item {
     focus: true
@@ -11,19 +11,51 @@ Item {
     Background {id:background}
     Component.onCompleted: { Interact.onMainViewLoaded(); optionsID.logOutButton.enabled = true; optionsID.stationSettingsButton.enabled = true}
     Component.onDestruction: Interact.pauseTimer()
+
+    Flickable {
+        id: flick2
+        clip: true;
+        anchors.fill: parent; // use a flickable to allow scrolling
+        contentWidth: parent.width; // flickable content width is its own width, scroll only vertically
+        contentHeight: parent.height*1.01; // content height is the height of the layout of items
+        boundsBehavior: Flickable.DragAndOvershootBounds
+        onDragEnded: {
+        }
+   Image {
+            id: refIcon
+            y: -flick2.verticalOvershoot
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: flick2.verticalOvershoot < 0
+            RotationAnimator {
+                id: ro
+                target: refIcon
+                running: refIcon.visible
+                from: 0
+                to: 360
+                loops: Animation.Infinite
+                duration: 2000
+            }
+
+            source: "Images/tomato.png"
+            z:4
+            width: 50
+            height: 50
+    }
     ComboBox {
+            id: cmb3
             objectName: "stationBoxObject"
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width*0.8
-            height: 100
+            height: 40
             opacity: 0.5
             spacing: 4
             model: Interact.stations
-            onAccepted: Interact.onStationChanged(currentIndex)
+            onCurrentIndexChanged: Interact.onStationChanged(currentIndex)
     }
 
     MyChart{
         anchors.fill: parent
+        anchors.bottomMargin: 20
         id: mychartID
         objectName: "mychartObject"
         visible: false
@@ -68,6 +100,8 @@ Item {
         function getIcon() {
             if(Battery.currentValue < 0)
                 return "/Images/nodata.png";
+            else if(Battery.currentValue>80)
+                return "/Images/battery(100).png"
             else if(Battery.currentValue >60)
                 return "/Images/battery(80).png"
             else if(Battery.currentValue >30)
@@ -140,6 +174,7 @@ Item {
                 Interact.onUpdateChartSignal("soil",mychartID.periodBox.currentIndex);
         }
         label: Soil.currentValue>-200?Soil.currentValue+" "+Soil.unit:"No data"
+    }
     }
     Keys.onBackPressed: {
         if(mychartID.visible===true){

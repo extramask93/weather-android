@@ -21,7 +21,7 @@ QList<Reading> Measurement::LoadFromJSON(QString jsonString)
         }
         if(result.empty())
             return QList<Reading>{};
-        auto rd = GetLatestReading();
+        auto rd = result[0];//GetLatestReading();
         currentValue(rd.second);
         return result;
 }

@@ -5,6 +5,7 @@
 #include <QtCharts>
 #include <QStringList>
 #include <QList>
+#include <QString>
 #include "httprequestworker.h"
 #include "measurement.h"
 #include <QQmlApplicationEngine>
@@ -21,7 +22,7 @@ class MeasurementsModel : public QObject
 public:
     explicit MeasurementsModel(QObject *parent, QAbstractSeries *series, QQmlApplicationEngine &engine);
 protected:
-    void getDataHelper(DateRange period);
+    void getDataHelper(DateRange period, QString per);
     QVector<QPointF> data_;
     QQuickView *appView_;
     QAbstractSeries *series_;
