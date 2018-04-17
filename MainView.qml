@@ -11,36 +11,60 @@ Item {
     Background {id:background}
     Component.onCompleted: { Interact.onMainViewLoaded(); optionsID.logOutButton.enabled = true; optionsID.stationSettingsButton.enabled = true}
     Component.onDestruction: Interact.pauseTimer()
+    Image {
+             id: refIcon
+             anchors.horizontalCenter: parent.horizontalCenter
+             visible: false
+
+             RotationAnimator {
+                 id: ro
+                 target: refIcon
+                 running: refIcon.visible
+                 from: 0
+                 to: 360
+                 loops: Animation.Infinite
+                 duration: 2000
+             }
+
+             source: "Images/tomato.png"
+             z:4
+             width: 50
+             height: 50
+     }
 
     Flickable {
+        property var ended: false
         id: flick2
         clip: true;
         anchors.fill: parent; // use a flickable to allow scrolling
         contentWidth: parent.width; // flickable content width is its own width, scroll only vertically
         contentHeight: parent.height*1.01; // content height is the height of the layout of items
         boundsBehavior: Flickable.DragAndOvershootBounds
-        onDragEnded: {
+        function endRefresh() {
+            refIcon.visible = false;
         }
-   Image {
-            id: refIcon
-            y: -flick2.verticalOvershoot
-            anchors.horizontalCenter: parent.horizontalCenter
-            visible: flick2.verticalOvershoot < 0
-            RotationAnimator {
-                id: ro
-                target: refIcon
-                running: refIcon.visible
-                from: 0
-                to: 360
-                loops: Animation.Infinite
-                duration: 2000
-            }
 
-            source: "Images/tomato.png"
-            z:4
-            width: 50
-            height: 50
-    }
+        onContentYChanged: {
+            if(flick2.contentY < 0 && !ended) {
+               refIcon.visible = true
+               refIcon.y = flick2.verticalOvershoot<(-parent.height/6)?(parent.height/6):-flick2.verticalOvershoot;}
+        }
+        onDragEnded: {
+            if(flick2.verticalOvershoot < -200) {
+                console.log("refreshing"); //call here
+                ended = true
+                refIcon.visible = true
+                refIcon.y = parent.height/6;
+            }
+            else {
+                refIcon.visible = false
+                refIcon.y = 0;
+                ended  = true
+            }
+        }
+        onDragStarted: {
+            ended = false
+        }
     ComboBox {
             id: cmb3
             objectName: "stationBoxObject"

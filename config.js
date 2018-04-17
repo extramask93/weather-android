@@ -5,7 +5,7 @@ function config2() {
     var dataBar2 = {
         labels: [],
         datasets: [{
-                label: 'temperature',
+                label: Model.cType,
                 fontSize: 10,
                 backgroundColor: color("red").alpha(0.5).rgbString(),
                 borderColor: "red",
@@ -52,6 +52,15 @@ function config2() {
                 }]
              },
             maintainAspectRatio: false,
+            events:['click'],
+            tooltips: {
+                mode: 'single',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        return Number(tooltipItem.yLabel).toFixed(1) + ' '+ Model.unit;
+                    }
+                }
+            },
             legend: {
                 display:false
             },

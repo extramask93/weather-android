@@ -3,6 +3,8 @@
 #include <QString>
 #include <QDebug>
 #include <QSettings>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include "httprequestworker.h"
 LoginHandler::LoginHandler(SettingsManager *manager,QObject *parent): QObject{parent},settingsManager_{manager}
 {
@@ -29,8 +31,13 @@ void LoginHandler::HandleLoginResult(HttpRequestWorker *worker) {
         emit loginSuccess();
     }
     else {
-        if(worker->response != "")
-            emit loginFailed(worker->error_type,worker->response);
+        if(worker->response != "") {
+            QJsonParseError error;
+            QJsonDocument document = QJsonDocument::fromJson(worker->response,&error);
+            QJsonObject jsonObject = document.object();
+            QString response = jsonObject["message"].toString();
+            emit loginFailed(worker->error_type,response);
+        }
         else
             emit loginFailed(worker->error_type,worker->error_str);
     }
